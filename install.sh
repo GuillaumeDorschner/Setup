@@ -61,7 +61,9 @@ run_ansible() {
     ansible-playbook -i hosts setup.yml --ask-become-pass
 }
 
-install_dependencies
+if ! command -v ansible >/dev/null 2>&1; then
+    install_dependencies
+fi
 setup_ansible
 run_ansible
 
