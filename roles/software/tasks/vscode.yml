@@ -1,0 +1,18 @@
+- name: Install VSCode
+  homebrew:
+    name: visual-studio-code
+    state: present
+  when: ansible_os_family == "Darwin"
+
+- name: Install VSCode Extensions
+  shell: 'code --install-extension {{ item }}'
+  loop:
+    - ms-python.python
+    - esbenp.prettier-vscode
+    - ms-azuretools.vscode-docker
+    - svelte.svelte-vscode
+
+- name: Copy VSCode Settings
+  copy:
+    src: '{{ role_path }}/../../files/vscode-settings.json'
+    dest: '~/Library/Application Support/Code/User/settings.json'

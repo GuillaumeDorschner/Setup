@@ -4,7 +4,9 @@
   become: true
 
   roles:
+    - role: system
     - role: common
-    - role: os_specific
-      vars:
-        os_type: '{{ ansible_os_family | lower }}'
+    - role: software/dev_tools
+    - role: software/security
+    - role: software/vscode
+    - role: software/docker_k8s

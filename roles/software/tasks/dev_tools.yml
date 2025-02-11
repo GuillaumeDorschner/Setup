@@ -1,0 +1,17 @@
+- name: Install Development Tools
+  package:
+    name:
+      - nodejs
+      - python3
+      - rustup
+    state: present
+  become: true
+
+- name: Install npm global packages
+  npm:
+    name: '{{ item }}'
+    global: yes
+  loop:
+    - pnpm
+    - degit
+    - nodemon
