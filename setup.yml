@@ -1,0 +1,10 @@
+- name: Setup macOS & Linux Environment
+  hosts: localhost
+  gather_facts: true
+  become: true
+
+  roles:
+    - role: common
+    - role: os_specific
+      vars:
+        os_type: '{{ ansible_os_family | lower }}'
