@@ -1,0 +1,13 @@
+- name: Apply macOS system configurations
+  shell: |
+    defaults write com.apple.finder AppleShowAllExtensions -bool true
+    defaults write com.apple.screensaver askForPassword -int 1
+    defaults write com.apple.dock show-recents -bool false
+    killall Finder Dock
+  when: ansible_os_family == "Darwin"
+
+- name: Apply Linux system tweaks
+  shell: |
+    gsettings set org.gnome.desktop.screensaver lock-enabled false
+    gsettings set org.gnome.desktop.interface enable-animations false
+  when: ansible_os_family != "Darwin"
