@@ -5,12 +5,7 @@ This is my personal setup for my development environment. To begin the setup wil
 First time ?
 
 ```sh
-mkdir -p ~/Setup
-cd ~/Setup
-git clone https://github.com/GuillaumeDorschner/Setup.git
-cd setup
-pip install ansible
-sudo ansible-playbook -i hosts setup.yml # sudo is required to install packages
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/GuillaumeDorschner/Setup/refs/heads/main/install.sh)"
 ```
 
 Already setup ?
