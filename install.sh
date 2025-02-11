@@ -24,7 +24,7 @@ install_dependencies() {
 
     if ! command -v pip3 >/dev/null 2>&1; then # TODO: check macos works or need to change to pip
         echo "📥 Installing Python & pip..."
-        elif [ -f "/etc/debian_version" ]; then
+        if [ -f "/etc/debian_version" ]; then
             sudo apt update && sudo apt install -y python3 python3-pip
         elif [ -f "/etc/redhat-release" ]; then
             sudo yum install -y python3 python3-pip
