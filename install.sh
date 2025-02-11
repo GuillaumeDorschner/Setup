@@ -25,7 +25,7 @@ install_dependencies() {
     if ! command -v pip3 >/dev/null 2>&1; then # TODO: check macos works or need to change to pip
         echo "📥 Installing Python & pip..."
         if [ -f "/etc/debian_version" ]; then
-            sudo apt update && sudo apt install -y python3 python3-pip
+            sudo apt update && sudo apt install -y python3 python3-pip python3-venv
         elif [ -f "/etc/redhat-release" ]; then
             sudo yum install -y python3 python3-pip
         fi
@@ -33,7 +33,13 @@ install_dependencies() {
 
     if ! command -v ansible >/dev/null 2>&1; then
         echo "📥 Installing Ansible..."
-        pip3 install --user ansible
+        if [ "$OS" = "Darwin" ]; then
+            pip3 install ansible # TODO: check macos works or need to change to pip
+        elif [ -f "/etc/debian_version" ]; then
+            sudo apt update && sudo apt install -y ansible
+        elif [ -f "/etc/redhat-release" ]; then
+            sudo yum install -y ansible
+        fi
     fi
 }
 
