@@ -1,9 +1,12 @@
 - name: Install Development Tools
   package:
     name:
-      - nodejs
-      - python3
       - rustup
+      - python3
+      - nodejs
+      - nvm
+      - pnpm
+      - yarn
     state: present
   become: true
 

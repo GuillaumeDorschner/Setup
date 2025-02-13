@@ -1,0 +1,31 @@
+- name: Install Kind
+  shell: |
+    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64
+    chmod +x ./kind
+    sudo mv ./kind /usr/local/bin/kind
+
+- name: Create Kubernetes cluster with Kind
+  shell: kind create cluster --name my-cluster
+
+- name: Set KUBECONFIG environment variable
+  shell: export KUBECONFIG="$(kind get kubeconfig-path --name=my-cluster)"
+
+- name: Verify Kubernetes cluster
+  shell: kubectl cluster-info
+
+- name: Install kubectl
+  shell: |
+    curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl
+    chmod +x ./kubectl
+    sudo mv ./kubectl /usr/local/bin/kubectl
+
+- name: Install Helm
+  shell: |
+    curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+    chmod 700 get_helm.sh
+    ./get_helm.sh
+
+- name: Install K9S
+  homebrew:
+    name: k9s
+    state: present
