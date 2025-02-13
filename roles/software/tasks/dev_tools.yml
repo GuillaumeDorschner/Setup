@@ -1,10 +1,10 @@
 - name: Install Development Tools
   package:
     name:
-      - rustup
       - python3
       - nodejs
       - nvm
+      - rust
     state: present
 
 - name: Install npm global packages
