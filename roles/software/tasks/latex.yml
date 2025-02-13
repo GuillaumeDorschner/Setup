@@ -3,29 +3,8 @@
       homebrew:
         name: mactex
         state: present
-      when: ansible_os_family == "Darwin"
-
-    - name: Ensure TeX binaries are in PATH
-      lineinfile:
-        path: ~/.zshrc
-        line: 'export PATH="/Library/TeX/texbin:$PATH"'
-        create: yes
-        state: present
 
     - name: Install LaTeX Workshop Extension in VS Code
       shell: code --install-extension James-Yu.latex-workshop
-      when: ansible_os_family == "Darwin"
 
-    - name: Copy VS Code LaTeX Configuration
-      copy:
-        src: '{{ role_path }}/../../files/vscode-settings.json'
-        dest: '~/Library/Application Support/Code/User/settings.json'
-      when: ansible_os_family == "Darwin"
   when: ansible_os_family == "Darwin"
-
-- block:
-    - name: Install LaTeX on Ubuntu
-      apt:
-        name: texlive-full
-        state: present
-  when: ansible_os_family == "Debian"

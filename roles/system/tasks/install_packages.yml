@@ -21,19 +21,3 @@
   homebrew:
     upgrade_all: yes
   when: ansible_os_family in ["Darwin", "Linux"]
-
-- name: Install Common Packages with Homebrew
-  homebrew:
-    name:
-      - git
-      - vim
-      - zsh
-      - zsh-autosuggestions
-      - curl
-      - wget
-      - tmux
-      - tree
-      - htop
-      - nmap
-      - rustup-init
-    state: present

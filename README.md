@@ -11,5 +11,5 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/GuillaumeDorschner/Setup/r
 Already setup ?
 
 ```sh
-sudo ansible-playbook ~/Setup/setup.yml
+ansible-playbook ~/Setup/setup.yml --ask-vault-pass
 ```

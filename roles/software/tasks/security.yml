@@ -1,14 +1,7 @@
-- name: Enable sudo with Touch ID (macOS only)
-  blockinfile:
-    path: /etc/pam.d/sudo_local
-    block: |
-      auth sufficient pam_tid.so
-      auth sufficient pam_watchid.so "reason=execute a command as root"
-  when: ansible_os_family == "Darwin"
-
-- name: Enable UFW Firewall (Linux only)
-  ufw:
-    state: enabled
-    policy: deny
-    logging: 'on'
-  when: ansible_os_family != "Darwin"
+# - name: Enable sudo with Touch ID (macOS only)
+#   blockinfile:
+#     path: /etc/pam.d/sudo_local
+#     block: |
+#       auth sufficient pam_tid.so
+#       auth sufficient pam_watchid.so "reason=execute a command as root"
+#   when: ansible_os_family == "Darwin"

@@ -1,12 +1,8 @@
 - name: Setup macOS & Linux Environment
   hosts: localhost
   gather_facts: true
-  become: true
 
   roles:
     - role: system
     - role: common
-    - role: software/dev_tools
-    - role: software/security
-    - role: software/vscode
-    - role: software/docker_k8s
+    - role: software
