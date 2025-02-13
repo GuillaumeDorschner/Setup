@@ -7,7 +7,6 @@
       - curl
       - zsh
     state: present
-  become: true
 # - name: Copy dotfiles
 #   ansible.builtin.copy:
 #     src: '{{ item }}'

@@ -5,11 +5,11 @@ This is my personal setup for my development environment. To begin the setup wil
 First time ?
 
 ```sh
-sudo sh -c "$(curl -fsSL https://raw.githubusercontent.com/GuillaumeDorschner/Setup/refs/heads/main/install.sh)"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/GuillaumeDorschner/Setup/refs/heads/main/install.sh)"
 ```
 
 Already setup ?
 
 ```sh
-sudo ansible-playbook ~/Setup/setup.yml --ask-vault-pass
+ansible-playbook ~/Setup/setup.yml --ask-vault-pass
 ```
