@@ -10,6 +10,12 @@
         executable: /bin/bash
       changed_when: false
 
+    - name: Copy VSCode Settings
+      copy:
+        src: '{{ role_path }}/files/vscode-settings.json'
+        dest: '{{ ansible_env.HOME }}/Library/Application Support/Code/User/settings.json'
+        mode: '0644'
+
     - name: Install VSCode Extensions
       shell: 'code --install-extension {{ item }}'
       loop:
@@ -71,10 +77,4 @@
         executable: /bin/bash
       register: vscode_extensions
       changed_when: "'already installed' not in vscode_extensions.stdout"
-
-    - name: Copy VSCode Settings
-      copy:
-        src: '{{ role_path }}/../files/vscode-settings.json'
-        dest: '{{ ansible_env.HOME }}/Library/Application Support/Code/User/settings.json'
-        mode: '0644'
   when: ansible_os_family == "Darwin"
