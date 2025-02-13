@@ -58,7 +58,7 @@ setup_ansible() {
 run_ansible() {
     echo "🚀 Running Ansible playbook..."
     cd "$SETUP_DIR"
-    ansible-playbook -i hosts setup.yml --ask-become-pass
+    sudo ansible-playbook -i hosts setup.yml
 }
 
 if ! command -v ansible >/dev/null 2>&1; then
