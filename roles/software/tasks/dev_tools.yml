@@ -8,7 +8,6 @@
       - pnpm
       - yarn
     state: present
-  become: true
 
 - name: Install npm global packages
   npm:

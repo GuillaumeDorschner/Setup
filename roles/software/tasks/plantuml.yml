@@ -3,6 +3,7 @@
       homebrew:
         name: java
         state: present
+
     - name: Install PlantUML via Homebrew
       homebrew:
         name: plantuml
@@ -13,17 +14,4 @@
       register: plantuml_path
       changed_when: false
 
-    - name: Create a symlink for PlantUML jar
-      file:
-        src: '{{ plantuml_path.stdout }}/libexec/plantuml.jar'
-        dest: /usr/local/bin/plantuml.jar
-        state: link
-        force: yes
-
-    - name: Add PlantUML environment variable to ~/.zshrc
-      lineinfile:
-        path: ~/.zshrc
-        line: 'export PLANTUML_JAR=/usr/local/bin/plantuml.jar'
-        create: yes
-        state: present
   when: ansible_os_family == 'Darwin'
