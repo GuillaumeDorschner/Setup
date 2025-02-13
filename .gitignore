@@ -1,5 +1,20 @@
-# Created by https://www.toptal.com/developers/gitignore/api/ansible,macos
-# Edit at https://www.toptal.com/developers/gitignore?templates=ansible,macos
+# Ignore SSH keys
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+.ssh/
+
+# Ignore environment files
+.env
+*.secrets
+
+# Ignore Ansible vault files if used
+*.vault
+vault.yml
+
+# Ignore logs and temporary files
+*.log
 
 ### Ansible ###
 *.retry
@@ -36,5 +51,3 @@ Temporary Items
 ### macOS Patch ###
 # iCloud generated files
 *.icloud
-
-# End of https://www.toptal.com/developers/gitignore/api/ansible,macos

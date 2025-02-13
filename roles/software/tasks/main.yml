@@ -1,0 +1,10 @@
+- name: Run all software setup tasks
+  include_tasks: '{{ item }}'
+  loop:
+    - dev_tools.yml
+    - docker.yml
+    - k8s.yml
+    - latex.yml
+    - plantuml.yml
+    - security.yml
+    - vscode.yml

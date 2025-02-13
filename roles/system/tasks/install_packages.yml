@@ -16,7 +16,6 @@
 - name: Update Homebrew
   homebrew:
     update_homebrew: yes
-  when: ansible_os_family in ["Darwin", "Linux"]
 
 - name: Upgrade Homebrew Packages
   homebrew:
@@ -26,22 +25,15 @@
 - name: Install Common Packages with Homebrew
   homebrew:
     name:
-      - vim
       - git
+      - vim
       - zsh
+      - zsh-autosuggestions
       - curl
-      - tmux
-      - rustup-init
-      - python
-      - node
-      - nvm
-      - pnpm
-      - yarn
       - wget
+      - tmux
       - tree
       - htop
-      - zsh-autosuggestions
-      - k9s
       - nmap
+      - rustup-init
     state: present
-  when: ansible_os_family in ["Darwin", "Linux"]
