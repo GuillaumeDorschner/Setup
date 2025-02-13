@@ -1,6 +1,6 @@
 - block:
     - name: Install VSCode on macOS
-      homebrew:
+      community.general.homebrew_cask:
         name: visual-studio-code
         state: present
 
@@ -11,7 +11,7 @@
       changed_when: false
 
     - name: Install VSCode Extensions
-      shell: 'code --install-extension {{ item }} --force'
+      shell: 'code --install-extension {{ item }}'
       loop:
         - adpyke.codesnap
         - astro-build.astro-vscode
@@ -31,8 +31,6 @@
         - github.vscode-github-actions
         - gruntfuggly.todo-tree
         - hediet.vscode-drawio
-        - james-yu.latex-workshop
-        - jebbs.plantuml
         - mechatroner.rainbow-csv
         - melihaltintas.svelte-format
         - mhutchie.git-graph

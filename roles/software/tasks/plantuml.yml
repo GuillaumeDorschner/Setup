@@ -14,4 +14,7 @@
       register: plantuml_path
       changed_when: false
 
+    - name: Install PlantUML Extension in VS Code
+      shell: code --install-extension jebbs.plantuml
+
   when: ansible_os_family == 'Darwin'

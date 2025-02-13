@@ -5,8 +5,6 @@
       - python3
       - nodejs
       - nvm
-      - pnpm
-      - yarn
     state: present
 
 - name: Install npm global packages
