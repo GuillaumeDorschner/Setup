@@ -16,5 +16,9 @@
 
     - name: Install PlantUML Extension in VS Code
       shell: code --install-extension jebbs.plantuml
+      args:
+        executable: /bin/bash
+      register: vscode_extensions
+      changed_when: "'already installed' not in vscode_extensions.stdout"
 
   when: ansible_os_family == 'Darwin'
