@@ -5,7 +5,7 @@ This is my personal setup for my development environment. To begin the setup wil
 First time ?
 
 ```sh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/GuillaumeDorschner/Setup/refs/heads/main/install.sh)"
+sh -c "$(curl -fsSL setup.install.dorschner.me)"
 ```
 
 Already setup ?
