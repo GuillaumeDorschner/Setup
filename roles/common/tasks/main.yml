@@ -40,6 +40,7 @@
     src: '{{ role_path }}/files/ssh_keys.tar'
     dest: '{{ ansible_env.HOME }}/ssh_keys.tar'
     mode: '0600'
+  changed_when: false
 
 - name: Extract SSH Archive using GNU tar
   ansible.builtin.unarchive:
@@ -54,6 +55,7 @@
   file:
     path: '{{ ansible_env.HOME }}/ssh_keys.tar'
     state: absent
+  changed_when: false
 # encrypt the ssh keys
 # tar -cvf ssh_keys.tar -C ~/.ssh .
 # ansible-vault encrypt ssh_keys.tar
