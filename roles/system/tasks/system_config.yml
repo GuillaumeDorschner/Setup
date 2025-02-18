@@ -1,13 +1,42 @@
-- name: Apply macOS system configurations
-  shell: |
-    defaults write com.apple.finder AppleShowAllExtensions -bool true
-    defaults write com.apple.screensaver askForPassword -int 1
-    defaults write com.apple.dock show-recents -bool false
-    killall Finder Dock
+- name: Configure macOS system settings
+  block:
+    - name: Show all file extensions in Finder
+      community.general.osx_defaults:
+        domain: com.apple.finder
+        key: AppleShowAllExtensions
+        type: bool
+        value: true
+
+    - name: Require password immediately after screensaver starts
+      community.general.osx_defaults:
+        domain: com.apple.screensaver
+        key: askForPassword
+        type: int
+        value: 1
+
+    - name: Disable "Recent Apps" in Dock
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: show-recents
+        type: bool
+        value: false
+
+    - name: Restart Finder and Dock
+      command: killall Finder Dock
+      changed_when: false
   when: ansible_os_family == "Darwin"
 
-- name: Apply Linux system tweaks
-  shell: |
-    gsettings set org.gnome.desktop.screensaver lock-enabled false
-    gsettings set org.gnome.desktop.interface enable-animations false
+- name: Configure Linux system settings
+  block:
+    - name: Disable screensaver lock
+      dconf:
+        key: '/org/gnome/desktop/screensaver/lock-enabled'
+        value: 'false'
+        state: present
+
+    - name: Disable animations in GNOME
+      dconf:
+        key: '/org/gnome/desktop/interface/enable-animations'
+        value: 'false'
+        state: present
   when: ansible_os_family != "Darwin"

@@ -1,0 +1,15 @@
+- name: Install Common CLI Tools
+  package:
+    name:
+      - vim
+      - git
+      - tmux
+      - curl
+      - wget
+      - zsh
+      - zsh-autosuggestions
+      - tmux
+      - tree
+      - htop
+      - nmap
+    state: present
