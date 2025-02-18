@@ -1,11 +1,48 @@
-- name: Install Development Tools
-  package:
-    name:
-      - python3
-      - nodejs
-      - nvm
-      - rust
-    state: present
+- block:
+    - name: Install Development Tools
+      package:
+        name:
+          - python3
+          - rustup
+          - nvm
+        state: present
+  when: ansible_os_family == "Darwin"
+
+- block:
+    - name: Install Development Tools
+      package:
+        name:
+          - python3
+          - rust
+        state: present
+
+    - name: Install Node Version Manager
+      command: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+      args:
+        creates: '{{ ansible_env.HOME }}/.nvm'
+      when: ansible_os_family != "Darwin"
+
+    - name: Verifiy NVM installation
+      command: nvm --version
+      register: nvm_version
+      failed_when: nvm_version.rc != 0
+      changed_when: false
+      when: ansible_os_family != "Darwin"
+
+    - name: Verifiy Node
+      command: node --version
+      register: node_version
+      failed_when: node_version.rc != 0
+      changed_when: false
+
+    - name: Install Node.js LTS
+      command: nvm install --lts
+      when: node_version.rc == 0
+
+    - name: Use the LTS version of Node.js
+      command: nvm use --lts
+      when: node_version.rc == 0
+  when: ansible_os_family != "Darwin"
 
 - name: Install npm global packages
   npm:
