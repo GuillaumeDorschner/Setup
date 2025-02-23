@@ -29,14 +29,9 @@
 - name: Configure Linux system settings
   block:
     - name: Disable screensaver lock
-      dconf:
-        key: '/org/gnome/desktop/screensaver/lock-enabled'
-        value: 'false'
-        state: present
+      shell: gsettings set org.gnome.desktop.screensaver lock-enabled false
 
     - name: Disable animations in GNOME
-      dconf:
-        key: '/org/gnome/desktop/interface/enable-animations'
-        value: 'false'
-        state: present
+      shell: gsettings set org.gnome.desktop.interface enable-animations false
+
   when: ansible_os_family != "Darwin"
