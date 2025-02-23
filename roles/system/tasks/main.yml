@@ -1,5 +1,5 @@
 - name: Run all software setup tasks
   include_tasks: '{{ item }}'
   loop:
-    - install_packages.yml
+    - packages.yml
     - system_config.yml

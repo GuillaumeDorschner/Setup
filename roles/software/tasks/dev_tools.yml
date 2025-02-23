@@ -1,33 +1,30 @@
-- block:
-    - name: Install Development Tools
-      package:
-        name:
-          - python3
-          - rustup
-          - nvm
-        state: present
-  when: ansible_os_family == "Darwin"
+- name: Install Development Tools
+  package:
+    name: '{{ packages }}'
+    state: present
+  vars:
+    packages: >
+      {% if ansible_os_family == 'Darwin' %}
+        ['python3', 'rustup', 'nvm']
+      {% elif ansible_os_family == 'Debian' %}
+        ['python3', 'rustc']
+      {% elif ansible_os_family == 'RedHat' %}
+        ['python3', 'rust'
+      {% endif %}
+  when: packages is defined
 
+# Ubuntu & RedHat NVM
 - block:
-    - name: Install Development Tools
-      package:
-        name:
-          - python3
-          - rust
-        state: present
-
     - name: Install Node Version Manager
       command: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
       args:
         creates: '{{ ansible_env.HOME }}/.nvm'
-      when: ansible_os_family != "Darwin"
 
     - name: Verifiy NVM installation
       command: nvm --version
       register: nvm_version
       failed_when: nvm_version.rc != 0
       changed_when: false
-      when: ansible_os_family != "Darwin"
 
     - name: Verifiy Node
       command: node --version
@@ -42,6 +39,7 @@
     - name: Use the LTS version of Node.js
       command: nvm use --lts
       when: node_version.rc == 0
+  when: ansible_os_family in ['RedHat', 'Debian']
 
 - name: Install npm global packages
   npm:
@@ -52,4 +50,3 @@
     - degit
     - nodemon
     - yarn
-  when: node_version.rc == 0

@@ -38,6 +38,7 @@ install_dependencies() {
         elif [ -f "/etc/debian_version" ]; then
             sudo apt update && sudo apt install -y ansible
         elif [ -f "/etc/redhat-release" ]; then
+            sudo yum install -y epel-release
             sudo yum install -y ansible
         fi
     fi
