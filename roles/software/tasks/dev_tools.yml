@@ -14,7 +14,7 @@
     var: packages
 
 - name: Install Development Tools on macOS
-  homebrew:
+  ansible.builtin.package:
     name: '{{ packages }}'
     state: present
 
