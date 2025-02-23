@@ -3,15 +3,17 @@
     name: '{{ packages }}'
     state: present
   vars:
-    packages: >
+    packages: >-
       {% if ansible_os_family == 'Darwin' %}
         ['python3', 'rustup', 'nvm']
       {% elif ansible_os_family == 'Debian' %}
         ['python3', 'rustc']
       {% elif ansible_os_family == 'RedHat' %}
         ['python3', 'rust']
+      {% else %}
+        []
       {% endif %}
-  when: packages is defined
+  when: packages | length > 0
 
 # Ubuntu & RedHat NVM
 - block:
