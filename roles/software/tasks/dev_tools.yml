@@ -47,6 +47,7 @@
         bash -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && node --version"
       register: node_version
       changed_when: false
+      ignore_errors: true
 
     - name: Install Node.js LTS
       shell: >
