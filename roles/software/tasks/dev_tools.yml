@@ -42,7 +42,6 @@
     - name: Use the LTS version of Node.js
       command: nvm use --lts
       when: node_version.rc == 0
-  when: ansible_os_family != "Darwin"
 
 - name: Install npm global packages
   npm:
@@ -52,3 +51,5 @@
     - pnpm
     - degit
     - nodemon
+    - yarn
+  when: node_version.rc == 0

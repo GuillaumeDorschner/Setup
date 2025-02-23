@@ -1,6 +1,57 @@
+- name: Installer Docker et Docker Compose sur macOS
+  homebrew:
+    name:
+      - docker
+      - docker-compose
+    state: present
+  when: ansible_os_family == "Darwin"
+
 - block:
-    - name: Install Docker
-      homebrew:
-        name: docker
+    - name: Ajouter le dépôt Docker sur Ubuntu
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
         state: present
-  when: ansible_os_family == 'Darwin'
+        update_cache: yes
+
+    - name: Ajouter la clé GPG de Docker sur Ubuntu
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Installer Docker et Docker Compose sur Ubuntu
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: present
+        update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- block:
+    - name: Ajouter le dépôt Docker sur CentOS/AlmaLinux
+      yum_repository:
+        name: docker-ce
+        description: Docker CE Repository
+        baseurl: https://download.docker.com/linux/centos/7/x86_64/stable/
+        gpgcheck: yes
+        gpgkey: https://download.docker.com/linux/centos/gpg
+        enabled: yes
+
+    - name: Installer Docker et Docker Compose sur CentOS/AlmaLinux
+      yum:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Démarrer et activer le service Docker
+  service:
+    name: docker
+    state: started
+    enabled: yes
+  when: ansible_os_family != "Darwin"

@@ -1,0 +1,70 @@
+# Macos
+- name: Install Brave Browser on macOS
+  community.general.homebrew_cask:
+    name: brave-browser
+    state: present
+  when: ansible_facts['os_family'] == 'Darwin'
+
+# ubuntu
+- block:
+    - name: Ensure apt-transport-https is installed
+      apt:
+        name: apt-transport-https
+        state: present
+      become: yes
+
+    - name: Add Brave APT repository key
+      apt_key:
+        url: https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+        state: present
+
+    - name: Add Brave APT repository
+      apt_repository:
+        repo: deb [arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main
+        state: present
+
+    # - name: Update APT package index
+    #   apt:
+    #     update_cache: yes
+
+    - name: Install Brave Browser
+      apt:
+        name: brave-browser
+        state: present
+  when: ansible_facts['os_family'] == 'Debian'
+
+# RedHat
+- block:
+    - name: Ensure dnf-plugins-core is installed
+      dnf:
+        name: dnf-plugins-core
+        state: present
+
+    - name: Add Brave DNF repository
+      ansible.builtin.dnf:
+        name: brave-browser
+        description: Brave Browser Repository
+        baseurl: https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+        enabled: yes
+        gpgcheck: yes
+
+    - name: Install Brave Browser
+      dnf:
+        name: brave-browser
+        state: present
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- block:
+    - name: Check current default browser
+      command: xdg-settings get default-web-browser
+      register: current_browser
+      changed_when: false
+
+    - name: Debug current browser setting
+      debug:
+        msg: 'Current default browser is: {{ current_browser.stdout }}'
+
+    - name: Set default browser to Brave if not already set
+      command: xdg-settings set default-web-browser brave-browser.desktop
+      when: "'brave' not in current_browser.stdout | lower"
+  when: ansible_facts['os_family'] in ['Debian', 'RedHat']
