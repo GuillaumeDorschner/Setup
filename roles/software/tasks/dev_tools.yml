@@ -11,14 +11,10 @@
         []
       {%- endif -%}
 
-- debug:
-    var: packages
-
 - name: Install Development Tools
-  ansible.builtin.apt:
+  package:
     name: '{{ packages }}'
     state: present
-    update_cache: yes
   when: packages | length > 0
 
 # Ubuntu & RedHat NVM
