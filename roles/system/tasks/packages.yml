@@ -52,10 +52,4 @@
         name: '*'
         state: latest
       when: ansible_pkg_mgr == "yum"
-
-    - name: Remove unnecessary packages
-      ansible.builtin.package:
-        name: '*'
-        state: absent
-        autoremove: yes
   when: ansible_os_family == 'RedHat'
