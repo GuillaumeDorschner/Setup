@@ -23,27 +23,45 @@
       shell: >
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
       args:
-        creates: '/root/.nvm/nvm.sh'
+        creates: '{{ ansible_env.HOME }}/.nvm/nvm.sh'
 
-    - name: Verifiy NVM installation
-      command: nvm --version
+    - name: Ensure NVM is loaded in zsh
+      lineinfile:
+        path: '{{ ansible_env.HOME }}/.zshrc'
+        line: |
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+        create: yes
+        state: present
+
+    - name: Verify NVM installation
+      shell: >
+        bash -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm --version"
       register: nvm_version
       failed_when: nvm_version.rc != 0
       changed_when: false
 
-    - name: Verifiy Node
-      command: node --version
+    - name: Verify Node
+      shell: >
+        bash -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && node --version"
       register: node_version
       failed_when: node_version.rc != 0
       changed_when: false
 
     - name: Install Node.js LTS
-      command: nvm install --lts
-      when: node_version.rc == 0
+      shell: >
+        bash -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm install --lts"
+      when: node_version.rc != 0
 
     - name: Use the LTS version of Node.js
-      command: nvm use --lts
-      when: node_version.rc == 0
+      shell: >
+        bash -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm use --lts"
+      when: node_version.rc != 0
+
+    - name: Set default Node.js version
+      shell: >
+        bash -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm alias default node"
   when: ansible_os_family in ['RedHat', 'Debian']
 
 - name: Install npm global packages
