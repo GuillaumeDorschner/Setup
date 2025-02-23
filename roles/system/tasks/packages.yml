@@ -1,3 +1,4 @@
+# Macos
 - block:
     - name: Check if Homebrew is installed
       shell: command -v brew
@@ -22,3 +23,39 @@
       homebrew:
         upgrade_all: yes
   when: ansible_os_family in ["Darwin"]
+
+# Ubuntu
+- block:
+    - name: Update the apt package index
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Upgrade all installed packages to their latest version
+      ansible.builtin.apt:
+        upgrade: dist
+
+    - name: Remove unnecessary packages
+      ansible.builtin.apt:
+        autoremove: yes
+  when: ansible_os_family == 'Debian'
+
+# RedHat
+- block:
+    - name: Ensure dnf/yum package manager is up to date
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest
+      when: ansible_pkg_mgr == "dnf"
+
+    - name: Ensure yum package manager is up to date
+      ansible.builtin.yum:
+        name: '*'
+        state: latest
+      when: ansible_pkg_mgr == "yum"
+
+    - name: Remove unnecessary packages
+      ansible.builtin.package:
+        name: '*'
+        state: absent
+        autoremove: yes
+  when: ansible_os_family == 'RedHat'
