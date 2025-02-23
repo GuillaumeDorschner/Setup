@@ -1,3 +1,4 @@
+# MacOS
 - name: Configure macOS system settings
   block:
     - name: Show all file extensions in Finder
@@ -26,12 +27,24 @@
       changed_when: false
   when: ansible_os_family == "Darwin"
 
+# Linux
 - name: Configure Linux system settings
   block:
-    - name: Disable screensaver lock
+    - name: Check current screensaver lock setting
+      shell: gsettings get org.gnome.desktop.screensaver lock-enabled
+      register: screensaver_lock_status
+      changed_when: false
+
+    - name: Disable screensaver lock if enabled
       shell: gsettings set org.gnome.desktop.screensaver lock-enabled false
+      when: screensaver_lock_status.stdout != 'false'
 
-    - name: Disable animations in GNOME
+    - name: Check current GNOME animations setting
+      shell: gsettings get org.gnome.desktop.interface enable-animations
+      register: animations_status
+      changed_when: false
+
+    - name: Disable animations in GNOME if enabled
       shell: gsettings set org.gnome.desktop.interface enable-animations false
-
+      when: animations_status.stdout != 'false'
   when: ansible_os_family != "Darwin"
