@@ -1,19 +1,22 @@
-- name: Install Development Tools
-  package:
-    name: '{{ packages }}'
-    state: present
-  vars:
+- name: Define package list based on OS
+  set_fact:
     packages: >-
-      {% if ansible_os_family == 'Darwin' %}
-        ['python3', 'rustup', 'nvm']
-      {% elif ansible_os_family == 'Debian' %}
+      {% if ansible_facts['os_family'] == 'Darwin' %}
+        ['python3', 'rustup-init', 'nvm']
+      {% elif ansible_facts['os_family'] == 'Debian' %}
         ['python3', 'rustc']
-      {% elif ansible_os_family == 'RedHat' %}
+      {% elif ansible_facts['os_family'] == 'RedHat' %}
         ['python3', 'rust']
       {% else %}
         []
       {% endif %}
-  when: packages | length > 0
+- debug:
+    var: packages
+
+- name: Install Development Tools on macOS
+  homebrew:
+    name: '{{ packages }}'
+    state: present
 
 # Ubuntu & RedHat NVM
 - block:
