@@ -9,7 +9,7 @@
       {% elif ansible_os_family == 'Debian' %}
         ['python3', 'rustc']
       {% elif ansible_os_family == 'RedHat' %}
-        ['python3', 'rust'
+        ['python3', 'rust']
       {% endif %}
   when: packages is defined
 
