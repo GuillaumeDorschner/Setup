@@ -1,34 +1,25 @@
 - name: Define package list based on OS
   set_fact:
     packages: >-
-      {% if ansible_facts['os_family'] == 'Darwin' %}
-        ['python', 'rustup-init', 'nvm']
-      {% elif ansible_facts['os_family'] == 'Debian' %}
-        ['python3', 'rustc']
-      {% elif ansible_facts['os_family'] == 'RedHat' %}
-        ['python3', 'rust']
-      {% else %}
+      {%- if ansible_facts['os_family'] == 'Darwin' -%}
+        ["python3", "rustup-init", "nvm"]
+      {%- elif ansible_facts['os_family'] == 'Debian' -%}
+        ["python3", "rustc"]
+      {%- elif ansible_facts['os_family'] == 'RedHat' -%}
+        ["python3", "rust"]
+      {%- else -%}
         []
-      {% endif %}
+      {%- endif -%}
 
-- name: Install Development Tools on macOS
-  homebrew:
-    name: '{{ packages }}'
-    state: present
-  when: ansible_facts['os_family'] == 'Darwin'
+- debug:
+    var: packages
 
-- name: Install Development Tools on Debian-based systems
-  apt:
+- name: Install Development Tools
+  ansible.builtin.apt:
     name: '{{ packages }}'
     state: present
     update_cache: yes
-  when: ansible_facts['os_family'] == 'Debian'
-
-- name: Install Development Tools on RedHat-based systems
-  yum:
-    name: '{{ packages }}'
-    state: present
-  when: ansible_facts['os_family'] == 'RedHat'
+  when: packages | length > 0
 
 # Ubuntu & RedHat NVM
 - block:
