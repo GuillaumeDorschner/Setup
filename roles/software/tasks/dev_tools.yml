@@ -46,10 +46,6 @@
 #       when: node_version.rc == 0
 #   when: ansible_os_family in ['RedHat', 'Debian']
 
-- role: ansible-role-nvm
-  nvm_version: v0.39.1
-  nvm_node_version: lts
-
 - name: Install npm global packages
   npm:
     name: '{{ item }}'
