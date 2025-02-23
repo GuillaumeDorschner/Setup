@@ -20,10 +20,11 @@
 # Ubuntu & RedHat NVM
 - block:
     - name: Install NVM
-      shell: >
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+      become: yes
+      become_user: '{{ ansible_user }}'
+      shell: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
       args:
-        creates: '/root/.nvm/nvm.sh'
+        creates: '{{ ansible_env.HOME }}/.nvm/nvm.sh'
 
     - name: Verifiy NVM installation
       command: nvm --version
