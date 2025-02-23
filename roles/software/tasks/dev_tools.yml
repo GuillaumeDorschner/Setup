@@ -35,33 +35,36 @@
         create: yes
         state: present
 
-    - name: Verify NVM installation
-      shell: >
-        bash -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm --version"
-      register: nvm_version
-      failed_when: nvm_version.rc != 0
-      changed_when: false
-
-    - name: Verify Node
-      shell: >
-        bash -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && node --version"
-      register: node_version
-      changed_when: false
-      ignore_errors: true
-
     - name: Install Node.js LTS
       shell: >
-        bash -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm install --lts"
-      when: node_version.rc != 0
-
-    - name: Use the LTS version of Node.js
-      shell: >
-        bash -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm use --lts"
-      when: node_version.rc != 0
+        bash -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm install --lts && nvm use --lts"
+      args:
+        executable: /bin/bash
 
     - name: Set default Node.js version
       shell: >
         bash -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm alias default node"
+      args:
+        executable: /bin/bash
+
+    - name: Reload shell environment to recognize Node.js & npm
+      shell: echo 'export PATH="$HOME/.nvm/versions/node/$(nvm version)/bin:$PATH"' >> {{ ansible_env.HOME }}/.bashrc
+      args:
+        executable: /bin/bash
+
+    - name: Verify Node.js installation
+      shell: >
+        bash -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm use --lts && node --version"
+      register: node_version
+      failed_when: node_version.rc != 0
+      changed_when: false
+
+    - name: Verify npm installation
+      shell: >
+        bash -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm use --lts && npm --version"
+      register: npm_version
+      failed_when: npm_version.rc != 0
+      changed_when: false
   when: ansible_os_family in ['RedHat', 'Debian']
 
 - name: Install npm global packages
