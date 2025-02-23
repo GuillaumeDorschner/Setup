@@ -17,18 +17,34 @@
     state: present
   when: packages | length > 0
 
+# Ubuntu & RedHat NVM
 - block:
-    - name: Install Node Version Manager
-      become_user: '{{ ansible_user }}'
-      shell: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+    - name: Install NVM
+      shell: >
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
       args:
-        creates: '{{ ansible_env.HOME }}/.nvm/nvm.sh'
+        creates: '/root/.nvm/nvm.sh'
+
+    - name: Verifiy NVM installation
+      command: nvm --version
+      register: nvm_version
+      failed_when: nvm_version.rc != 0
+      changed_when: false
+
+    - name: Verifiy Node
+      command: node --version
+      register: node_version
+      failed_when: node_version.rc != 0
+      changed_when: false
 
     - name: Install Node.js LTS
-      shell: . {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm install --lts
-      args:
-        creates: '{{ ansible_env.HOME }}/.nvm/versions/node'
-  when: ansible_facts['os_family'] in ['RedHat', 'Debian']
+      command: nvm install --lts
+      when: node_version.rc == 0
+
+    - name: Use the LTS version of Node.js
+      command: nvm use --lts
+      when: node_version.rc == 0
+  when: ansible_os_family in ['RedHat', 'Debian']
 
 - name: Install npm global packages
   npm:
