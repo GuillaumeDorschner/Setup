@@ -8,4 +8,5 @@
     - vscode.yml
     - plantuml.yml
     - latex.yml
+    - gitkraken.yml
     - browser.yml

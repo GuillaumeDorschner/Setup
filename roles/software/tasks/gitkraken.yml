@@ -1,0 +1,7 @@
+- name: Install GitKraken
+  block:
+    - name: Install GitKraken on macOS
+      homebrew_cask:
+        name: gitkraken
+        state: present
+      when: ansible_os_family == "Darwin"
