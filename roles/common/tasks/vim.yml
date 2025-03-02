@@ -1,9 +1,9 @@
 - name: Add configuration to vimrc
   blockinfile:
     path: '{{ ansible_env.HOME }}/.vimrc'
-    marker: '# {mark} ANSIBLE MANAGED BLOCK: tmux.conf'
+    marker: '" {mark} ANSIBLE MANAGED BLOCK: vimrc'
     block: |
-      # General configuration added by Ansible
+      " General configuration added by Ansible
       {{ lookup('file', '{{ role_path }}/files/vim/.vimrc') }}
     create: yes
     state: present
