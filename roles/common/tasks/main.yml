@@ -5,3 +5,7 @@
     - cli_tools.yml
     - dotfiles.yml
     - ssh_key.yml
+    - tmux.yml
+    - vim.yml
+    - desktop_wallpaper.yml
+    - profile_picture.yml
