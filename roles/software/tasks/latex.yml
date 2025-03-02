@@ -35,7 +35,7 @@
 - name: Install LaTeX Workshop Extension in VS Code
   shell: code --install-extension James-Yu.latex-workshop
   args:
-    executable: /bin/bash
+    executable: /bin/zsh
   register: vscode_extensions
   changed_when: "'already installed' not in vscode_extensions.stdout"
   when: ansible_os_family == "Darwin"

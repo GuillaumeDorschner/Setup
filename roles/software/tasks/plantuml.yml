@@ -38,7 +38,7 @@
     - name: Install PlantUML Extension in VS Code
       shell: code --install-extension jebbs.plantuml
       args:
-        executable: /bin/bash
+        executable: /bin/zsh
       register: vscode_extensions
       changed_when: "'already installed' not in vscode_extensions.stdout"
   when: system_type.stdout == "desktop"

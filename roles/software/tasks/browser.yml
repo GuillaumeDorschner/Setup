@@ -55,6 +55,8 @@
     - name: Check current default browser | Not macOS
       command: xdg-settings get default-web-browser
       register: current_browser
+      argss:
+        executable: /bin/zsh
       changed_when: false
 
     - name: Debug current browser setting | Not macOS
@@ -63,5 +65,7 @@
 
     - name: Set default browser to Brave if not already set | Not macOS
       command: xdg-settings set default-web-browser brave-browser.desktop
+      args:
+        executable: /bin/zsh
       when: "'brave' not in current_browser.stdout | lower"
   when: ansible_facts['os_family'] in ['Debian', 'RedHat']

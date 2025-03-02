@@ -36,6 +36,8 @@
 #     - name: Check Helm Install
 #       shell: |
 #         helm version
+#       args:
+#         executable: /bin/zsh
 #       register: helm_version
 #       ignore_errors: yes
 
@@ -44,6 +46,8 @@
 #         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
 #         chmod 700 get_helm.sh
 #         ./get_helm.sh
+#       args:
+#         executable: /bin/zsh
 #       when: helm_version.rc != 0
 
 #     - name: Install K9S

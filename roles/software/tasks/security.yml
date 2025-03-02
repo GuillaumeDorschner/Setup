@@ -33,6 +33,8 @@
 - name: Check if GUI
   shell: '[[ -n "$(command -v xrandr)" || -n "$(command -v gnome-shell)" ]] && echo "desktop" || echo "server"'
   register: system_type
+  args:
+    executable: /bin/zsh
   changed_when: false
 
 # Debian

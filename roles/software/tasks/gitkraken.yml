@@ -10,6 +10,8 @@
     - name: Get the latest GitKraken version
       shell: "curl -s https://www.gitkraken.com/download | sed -n 's/.*Latest release: \\([0-9.]*\\).*/\\1/p'"
       register: latest_version
+      args:
+        executable: /bin/zsh
       changed_when: false
 
     - name: Store latest GitKraken version
@@ -22,6 +24,8 @@
   block:
     - name: Get installed GitKraken version
       command: dpkg-query -W -f='${Version}' gitkraken
+      args:
+        executable: /bin/zsh
       register: installed_version
       ignore_errors: true
       changed_when: false
@@ -50,6 +54,8 @@
     - name: Get installed GitKraken version | RedHat
       shell: "rpm -q --queryformat '%{VERSION}' gitkraken"
       register: installed_version
+      args:
+        executable: /bin/zsh
       ignore_errors: true
       changed_when: false
 
