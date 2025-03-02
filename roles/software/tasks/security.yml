@@ -43,6 +43,7 @@
       apt:
         name: ufw
         state: present
+      become: true
 
     - name: Allow essential services | Debian
       ufw:
@@ -51,12 +52,14 @@
         proto: tcp
       loop:
         - 22 # SSH
-        - 80 # HTTP (if needed)
+        - 80 # HTTP
         - 443 # HTTPS
+      become: true
 
     - name: Enable UFW | Debian
       ufw:
         state: enabled
+      become: true
 
     - name: Disable Root Login in SSH | Debian
       lineinfile:
@@ -64,12 +67,14 @@
         regexp: '^PermitRootLogin'
         line: 'PermitRootLogin no'
       notify: Restart SSH
+      become: true
       when: system_type.stdout == "desktop"
 
     - name: Install unattended-upgrades | Debian
       apt:
         name: unattended-upgrades
         state: present
+      become: true
 
     - name: Enable unattended-upgrades | Debian
       copy:
@@ -77,6 +82,7 @@
         content: |
           APT::Periodic::Update-Package-Lists "1";
           APT::Periodic::Unattended-Upgrade "1";
+      become: true
   when: ansible_os_family == "Debian" and system_type.stdout == "desktop"
 
 # RedHat
@@ -85,12 +91,14 @@
       dnf:
         name: firewalld
         state: present
+      become: true
 
     - name: Enable and start firewalld | RedHat
       service:
         name: firewalld
         state: started
         enabled: yes
+      become: true
 
     - name: Allow essential services | RedHat
       firewalld:
@@ -101,9 +109,11 @@
         - ssh
         - http
         - https
+      become: true
 
     - name: Reload firewall | RedHat
       command: firewall-cmd --reload
+      become: true
 
     - name: Disable Root Login in SSH | RedHat
       lineinfile:
@@ -111,16 +121,19 @@
         regexp: '^PermitRootLogin'
         line: 'PermitRootLogin no'
       notify: Restart SSH
+      become: true
       when: system_type.stdout == "desktop"
 
     - name: Install dnf-automatic | RedHat
       dnf:
         name: dnf-automatic
         state: present
+      become: true
 
     - name: Enable automatic updates | RedHat
       systemd:
         name: dnf-automatic.timer
         state: started
         enabled: yes
+      become: true
   when: ansible_os_family == "RedHat" and system_type.stdout == "desktop"
