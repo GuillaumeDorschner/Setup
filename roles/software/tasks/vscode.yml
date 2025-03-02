@@ -1,0 +1,163 @@
+- block:
+    - name: Install VSCode | macOS
+      community.general.homebrew_cask:
+        name: visual-studio-code
+        state: present
+
+    - name: Ensure VSCode command-line tool is available | macOS
+      shell: "test -f /usr/local/bin/code || open -a 'Visual Studio Code' --wait"
+      args:
+        executable: /bin/bash
+      changed_when: false
+
+    - name: Copy VSCode Settings | macOS
+      copy:
+        src: '{{ role_path }}/files/vsc/vscode-settings.json'
+        dest: '{{ ansible_env.HOME }}/Library/Application Support/Code/User/settings.json'
+        mode: '0644'
+  when: ansible_os_family == "Darwin"
+
+- block:
+    - name: Ensure the /etc/apt/keyrings directory exists
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+      become: true
+
+    - name: Check if the Microsoft GPG key is already present
+      stat:
+        path: /etc/apt/keyrings/packages.microsoft.gpg
+      register: microsoft_gpg_key
+
+    - name: Download and install the Microsoft GPG key if not present
+      get_url:
+        url: https://packages.microsoft.com/keys/microsoft.asc
+        dest: /etc/apt/keyrings/packages.microsoft.gpg
+        mode: '0644'
+      become: true
+      when: not microsoft_gpg_key.stat.exists
+
+    - name: Add the VSCode repository
+      apt_repository:
+        repo: 'deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main'
+        state: present
+        filename: vscode
+      become: true
+
+    - name: Install or update VSCode
+      apt:
+        name: code
+        state: latest
+        update_cache: yes
+      become: true
+
+    - name: Copy VSCode settings
+      copy:
+        src: '{{ role_path }}/files/vsc/vscode-settings.json'
+        dest: '{{ ansible_env.HOME }}/.config/Code/User/settings.json'
+        mode: '0644'
+      become: false
+  when: ansible_os_family == "Debian"
+
+- block:
+    - name: Import Microsoft GPG key | RedHat
+      rpm_key:
+        key: https://packages.microsoft.com/keys/microsoft.asc
+        state: present
+
+    - name: Add VSCode repository | RedHat
+      copy:
+        dest: /etc/yum.repos.d/vscode.repo
+        content: |
+          [code]
+          name=Visual Studio Code
+          baseurl=https://packages.microsoft.com/yumrepos/vscode
+          enabled=1
+          gpgcheck=1
+          gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+
+    - name: Install VSCode | RedHat
+      dnf:
+        name: code
+        state: present
+        update_cache: yes
+
+    - name: Copy VSCode Settings | RedHat
+      copy:
+        src: '{{ role_path }}/files/vsc/vscode-settings.json'
+        dest: '{{ ansible_env.HOME }}/.config/Code/User/settings.json'
+        mode: '0644'
+  when: ansible_os_family == "RedHat"
+
+- name: Check if GUI  | Debian & RedHat
+  shell: '[[ -n "$(command -v xrandr)" || -n "$(command -v gnome-shell)" ]] && echo "desktop" || echo "server"'
+  register: system_type
+  changed_when: false
+  args:
+    executable: /bin/zsh
+  when: ansible_os_family in ['Debian', 'RedHat']
+
+- block:
+    - name: Install VSCode Extensions
+      shell: 'code --install-extension {{ item }}'
+      loop:
+        - adpyke.codesnap
+        - astro-build.astro-vscode
+        - bierner.markdown-mermaid
+        - bpruitt-goddard.mermaid-markdown-syntax-highlighting
+        - bradlc.vscode-tailwindcss
+        - charliermarsh.ruff
+        - dart-code.dart-code
+        - dart-code.flutter
+        # - equinusocio.vsc-material-theme
+        # - equinusocio.vsc-material-theme-icons
+        - esbenp.prettier-vscode
+        - ethansk.restore-terminals
+        - fivethree.vscode-svelte-snippets
+        - github.copilot
+        - github.copilot-chat
+        - github.vscode-github-actions
+        - gruntfuggly.todo-tree
+        - hediet.vscode-drawio
+        - mechatroner.rainbow-csv
+        - melihaltintas.svelte-format
+        - mhutchie.git-graph
+        - ms-azuretools.vscode-docker
+        - ms-kubernetes-tools.vscode-kubernetes-tools
+        - ms-python.autopep8
+        - ms-python.black-formatter
+        - ms-python.debugpy
+        - ms-python.python
+        - ms-python.vscode-pylance
+        - ms-toolsai.jupyter
+        - ms-toolsai.jupyter-keymap
+        - ms-toolsai.jupyter-renderers
+        - ms-toolsai.vscode-jupyter-cell-tags
+        - ms-toolsai.vscode-jupyter-slideshow
+        - ms-vscode-remote.remote-containers
+        - ms-vscode-remote.remote-ssh
+        - ms-vscode-remote.remote-ssh-edit
+        - ms-vscode.cpptools
+        - ms-vscode.cpptools-extension-pack
+        - ms-vscode.cpptools-themes
+        - ms-vscode.remote-explorer
+        - ms-vsliveshare.vsliveshare
+        - natqe.reload
+        - pkief.material-icon-theme
+        - redhat.vscode-xml
+        - redhat.vscode-yaml
+        - rickaym.manim-sideview
+        - ritwickdey.liveserver
+        - rust-lang.rust-analyzer
+        - shd101wyy.markdown-preview-enhanced
+        - svelte.svelte-vscode
+        - unifiedjs.vscode-mdx
+        - usernamehw.errorlens
+        - vscodevim.vim
+        - yzhang.markdown-all-in-one
+      args:
+        executable: /bin/bash
+      register: vscode_extensions
+      changed_when: "'already installed' not in vscode_extensions.stdout"
+  when: ansible_os_family == "Darwin" or system_type.stdout == "desktop"

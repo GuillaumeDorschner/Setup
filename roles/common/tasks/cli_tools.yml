@@ -1,0 +1,26 @@
+- name: Install Common CLI Tools
+  package:
+    name:
+      - vim
+      - git
+      - tmux
+      - curl
+      - wget
+      - zsh
+      - zsh-autosuggestions
+      - tree
+      - htop
+      - nmap
+      - gpg
+    state: present
+  become: "{{ ansible_os_family != 'Darwin' }}"
+
+# Ubuntu
+- block:
+    - name: Install Common CLI Tools | Debian
+      package:
+        name:
+          - apt-transport-https
+        state: present
+      become: "{{ ansible_os_family != 'Darwin' }}"
+  when: ansible_os_family == 'Debian'

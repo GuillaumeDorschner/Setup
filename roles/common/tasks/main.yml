@@ -1,0 +1,7 @@
+- name: Run all common tasks
+  include_tasks: '{{ item }}'
+  loop:
+    - zsh.yml
+    - cli_tools.yml
+    - dotfiles.yml
+    - ssh_key.yml

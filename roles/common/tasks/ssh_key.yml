@@ -1,0 +1,43 @@
+- name: Install SSH Keys
+  block:
+    - name: Ensure .ssh directory exists
+      file:
+        path: '{{ ansible_env.HOME }}/.ssh'
+        state: directory
+        mode: '0700'
+
+    - name: Ensure GNU tar is installed (macOS only)
+      homebrew:
+        name: gnu-tar
+        state: present
+      when: ansible_os_family == "Darwin"
+
+    - name: Copy Encrypted SSH Archive
+      copy:
+        src: '{{ role_path }}/files/ssh_keys.tar'
+        dest: '{{ ansible_env.HOME }}/ssh_keys.tar'
+        mode: '0600'
+      changed_when: false
+
+    - name: Extract SSH Archive using GNU tar
+      ansible.builtin.unarchive:
+        src: '{{ ansible_env.HOME }}/ssh_keys.tar'
+        dest: '{{ ansible_env.HOME }}/.ssh'
+        remote_src: yes
+        extra_opts: ['--strip-components=1']
+      environment:
+        PATH: '/usr/local/bin:/opt/homebrew/bin:{{ ansible_env.PATH }}'
+
+    - name: Remove Archive
+      file:
+        path: '{{ ansible_env.HOME }}/ssh_keys.tar'
+        state: absent
+      changed_when: false
+  when: (install_ssh_keys | default('no') | lower) in ['yes', 'y'] and ansible_os_family != "Windows"
+# encrypt the ssh keys
+# tar -cvf ssh_keys.tar -C ~/.ssh .
+# ansible-vault encrypt ssh_keys.tar
+# mv ssh_keys.tar ~/Setup/roles/common/files/
+
+# check for encryption
+# head -n 5 ~/Setup/roles/common/files/ssh_keys.tar

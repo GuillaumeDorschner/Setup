@@ -1,0 +1,62 @@
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="robbyrussell"
+plugins=(git sudo kubectl docker docker-compose doctl)
+
+source $ZSH/oh-my-zsh.sh
+
+if command -v neofetch &>/dev/null; then
+    neofetch --ascii ~/.config/neofetch/ascii-art.txt
+fi
+
+if command -v kubectl &>/dev/null; then
+  source <(kubectl completion zsh)
+fi
+if command -v helm &>/dev/null; then
+  source <(helm completion zsh)
+fi
+
+# Functions
+
+mcd() {
+  mkdir -p "$1" && cd "$1"
+}
+
+ensure_docker_running() {
+    if ! docker info &>/dev/null; then
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            open -a Docker
+        fi
+        echo "Waiting for Docker to start..."
+        until docker info &>/dev/null; do
+            sleep 0.2
+        done
+        echo "Docker is ready"
+    fi
+}
+
+dcks() {
+    ensure_docker_running
+    docker-compose down -v
+    docker-compose up "$@"
+}
+
+vm() {
+    ensure_docker_running
+    docker run --rm -it "$1"
+}
+
+kali() {
+  KALI_PATH="$HOME/Dev/cyber/kali-linux"
+  ensure_docker_running
+  (cd "$KALI_PATH" && docker-compose up -d)
+  docker exec -it kali_nmap /bin/bash
+  (cd "$KALI_PATH" && docker-compose down)
+}
+
+ocean() {
+  ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$1 -i ~/.ssh/digital_ocean
+}
+
+server() {
+  python3 -m http.server 80
+}

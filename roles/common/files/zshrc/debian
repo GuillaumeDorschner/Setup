@@ -1,0 +1,12 @@
+# Debian-based aliases and configurations
+if command -v xdg-open &>/dev/null; then
+  alias finder='xdg-open .'
+elif command -v nautilus &>/dev/null; then
+  alias finder='nautilus .'
+elif command -v dolphin &>/dev/null; then
+  alias finder='dolphin .'
+fi
+
+if command -v apt &>/dev/null; then
+  alias brewup='sudo apt update && sudo apt upgrade -y'
+fi

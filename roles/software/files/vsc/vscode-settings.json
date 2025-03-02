@@ -1,0 +1,151 @@
+{
+  // --- For VSC Remote ---
+  // un comment for offline servers
+  "update.mode": "none",
+  "extensions.autoCheckUpdates": false,
+  "extensions.autoUpdate": false,
+  // --- Language ---
+  // all
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // Python
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4
+    // "editor.defaultFormatter": "charliermarsh.ruff"
+    // "editor.codeActionsOnSave": {
+    //   "source.organizeImports": "explicit",
+    //   "source.fixAll": "explicit"
+    // }
+  },
+  // "python.analysis.typeCheckingMode": "strict",
+  // "ruff.path": ["/Library/Frameworks/Python.framework/Versions/3.11/bin/ruff"],
+
+  // typescript
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "typescript.validate.enable": false
+  },
+
+  // Github copilot
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": false,
+    "markdown": true,
+    "scminput": false
+  },
+
+  // Notebook
+  "notebook.formatOnCellExecution": true,
+  "notebook.formatOnSave.enabled": true,
+  "notebook.codeActionsOnSave": {
+    "source.organizeImports": true
+  },
+
+  // Latex
+  "latex-workshop.view.pdf.viewer": "tab",
+  "latex-workshop.latex.autoBuild.run": "onSave",
+  "latex-workshop.synctex.afterBuild.enabled": true,
+  "latex-workshop.latex.autoClean.run": "onBuilt",
+  "latex-workshop.view.outline.sync.viewer": true,
+
+  "latex-workshop.latex.tools": [
+    {
+      "name": "lualatex",
+      "command": "lualatex",
+      "args": ["-shell-escape", "-interaction=nonstopmode", "-synctex=1", "-output-directory=%OUTDIR%", "%DOC%"]
+    }
+  ],
+
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "lualatex",
+      "tools": ["lualatex"]
+    }
+  ],
+
+  "latex-workshop.latex.recipe.default": "lualatex",
+
+  // PlantUML
+  "markdown-preview-enhanced.plantumlJarPath": "/usr/local/bin/plantuml.jar",
+  "plantuml.jar": "/usr/local/bin/plantuml.jar",
+
+  // Flutter
+  "dart.previewFlutterUiGuides": true,
+  "dart.previewFlutterUiGuidesCustomTracking": true,
+  "dart.showInspectorNotificationsForWidgetErrors": false,
+  "dart.debugExternalPackageLibraries": true,
+  "dart.debugSdkLibraries": false,
+
+  // Svelte
+  "svelte.enable-ts-plugin": true,
+  "workbench.editor.labelFormat": "short",
+  "explorer.compactFolders": false,
+  "workbench.colorTheme": "Material Theme Ocean High Contrast",
+  "markdown.marp.chromePath": "/Applications/Brave Browser.app",
+  "markdown.marp.enableHtml": true,
+  "jupyter.askForKernelRestart": false,
+  "git.openRepositoryInParentFolders": "never",
+  "[xml]": {
+    "editor.defaultFormatter": "redhat.vscode-xml"
+  },
+
+  // astro
+  "[astro]": {
+    "editor.defaultFormatter": "astro-build.astro-vscode"
+  },
+
+  // --- General VSC ---
+  "editor.snippetSuggestions": "top",
+  "editor.inlineSuggest.enabled": true,
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.minimap.enabled": false,
+  "editor.linkedEditing": true,
+  "workbench.sideBar.location": "right",
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.editorAssociations": {
+    "*.pdf": "latex-workshop-pdf-hook"
+  },
+  "explorer.confirmDragAndDrop": false,
+  "explorer.confirmPasteNative": false,
+  "explorer.confirmDelete": false,
+  "security.workspace.trust.enabled": false,
+  "security.workspace.trust.untrustedFiles": "newWindow",
+  "python.defaultInterpreterPath": "/usr/local/bin/python3",
+  "redhat.telemetry.enabled": true,
+  "liveServer.settings.donotShowInfoMsg": true,
+  "application.shellEnvironmentResolutionTimeout": 50,
+  "git.autofetch": true,
+  "python.createEnvironment.trigger": "off",
+  "git.confirmSync": false,
+  "window.confirmSaveUntitledWorkspace": false,
+  "terminal.integrated.enableMultiLinePasteWarning": "never",
+  "terminal.integrated.showExitAlert": false, // termianl: exit ctrl + d --> error 127 so disable showExitAlert
+
+  // --- Extensions ---
+  // Prettier
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "all",
+  "prettier.printWidth": 120,
+
+  // Code snap
+  "codesnap.backgroundColor": "",
+  "codesnap.showWindowTitle": true,
+  "codesnap.shutterAction": "copy",
+  "codesnap.transparentBackground": true,
+  "codesnap.boxShadow": "rgba(0, 0, 0, 0.45) 0px 8px 28px",
+  "vs-kubernetes": {
+    "vscode-kubernetes.minikube-path.mac": "/Users/guillaumedorschner/.vs-kubernetes/tools/minikube/darwin-amd64/minikube",
+    "vs-kubernetes.crd-code-completion": "enabled",
+    "vscode-kubernetes.minikube-path-mac": "/Users/guillaumedorschner/.vs-kubernetes/tools/minikube/darwin-amd64/minikube",
+    "vscode-kubernetes.helm-path-linux": "/home/guillaume/.local/state/vs-kubernetes/tools/helm/linux-amd64/helm",
+    "vscode-kubernetes.kubectl-path-linux": "/home/guillaume/.local/state/vs-kubernetes/tools/kubectl/kubectl",
+    "vscode-kubernetes.minikube-path-linux": "/home/guillaume/.local/state/vs-kubernetes/tools/minikube/linux-amd64/minikube"
+  },
+  "github.copilot.editor.enableAutoCompletions": true,
+  "cmake.showOptionsMovedNotification": false,
+  "debug.onTaskErrors": "abort",
+  "hediet.vscode-drawio.resizeImages": null,
+  "workbench.startupEditor": "none"
+}

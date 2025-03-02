@@ -1,0 +1,53 @@
+# MacOS
+- block:
+    - name: Install Kind | macOS
+      homebrew:
+        name: kind
+        state: present
+    - name: Install kubectl | macOS
+      homebrew:
+        name: kubernetes-cli
+        state: present
+    - name: Install k9s | macOS
+      homebrew:
+        name: k9s
+        state: present
+  when: ansible_os_family == 'Darwin'
+# - block: # TODO: Add installation steps for Ubuntu, RedHat
+#     - name: Install Kind
+#       shell: |
+#         curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64
+#         chmod +x ./kind
+#         sudo mv ./kind /usr/local/bin/kind
+
+#     - name: Check kubectl Install
+#       shell: |
+#         kubectl version --client
+#       register: kubectl_version
+#       ignore_errors: yes
+
+#     - name: Install kubectl
+#       shell: |
+#         curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl
+#         chmod +x ./kubectl
+#         sudo mv ./kubectl /usr/local/bin/kubectl
+#       when: kubectl_version.rc != 0
+
+#     - name: Check Helm Install
+#       shell: |
+#         helm version
+#       register: helm_version
+#       ignore_errors: yes
+
+#     - name: Install Helm
+#       shell: |
+#         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+#         chmod 700 get_helm.sh
+#         ./get_helm.sh
+#       when: helm_version.rc != 0
+
+#     - name: Install K9S
+#       homebrew:
+#         name: k9s
+#         state: present
+#   when: ansible_os_family != 'Darwin'

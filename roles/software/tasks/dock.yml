@@ -1,0 +1,81 @@
+# # TODO: Add dock items for MacOS and Linux
+# # MacOS
+# - block:
+#     - name: Install dockutil
+#       homebrew:
+#         name: dockutil
+#         state: present
+
+#     - name: Remove all current Dock items
+#       shell: dockutil --remove all
+#       ignore_errors: true
+
+#     - name: Add applications to Dock in a specific order
+#       shell: |
+#         dockutil --add "/Applications/Safari.app"
+#         dockutil --add "/Applications/GitKraken.app"
+#         dockutil --add "/Applications/Visual Studio Code.app"
+#         dockutil --add "/Applications/Notability.app"
+#         dockutil --add "/Applications/Notion.app"
+
+#     - name: Set Dock position to the left
+#       community.general.osx_defaults:
+#         domain: com.apple.dock
+#         key: orientation
+#         type: string
+#         value: left
+
+#     - name: Restart Dock to apply changes
+#       command: killall Dock
+#       changed_when: false
+#   when: ansible_os_family == 'Darwin'
+
+# # Debian-based (Ubuntu)
+# - block:
+#     - name: Install Plank (Dock Alternative for Linux)
+#       apt:
+#         name: plank
+#         state: present
+#       become: true
+
+#     - name: Ensure Plank autostarts
+#       copy:
+#         dest: '{{ ansible_env.HOME }}/.config/autostart/plank.desktop'
+#         content: |
+#           [Desktop Entry]
+#           Type=Application
+#           Exec=plank
+#           Hidden=false
+#           NoDisplay=false
+#           X-GNOME-Autostart-enabled=true
+#           Name=Plank
+#         mode: '0644'
+
+#     - name: Set Plank position to the left
+#       shell: gsettings set net.launchpad.plank.dock position 'left'
+#   when: ansible_os_family == 'Debian'
+
+# # RedHat
+# - block:
+#     - name: Install Plank (Dock Alternative for Linux)
+#       dnf:
+#         name: plank
+#         state: present
+#       become: true
+
+#     - name: Ensure Plank autostarts
+#       copy:
+#         dest: '{{ ansible_env.HOME }}/.config/autostart/plank.desktop'
+#         content: |
+#           [Desktop Entry]
+#           Type=Application
+#           Exec=plank
+#           Hidden=false
+#           NoDisplay=false
+#           X-GNOME-Autostart-enabled=true
+#           Name=Plank
+#         mode: '0644'
+
+#     - name: Set Plank position to the left
+#       shell: gsettings set net.launchpad.plank.dock position 'left'
+#   when: ansible_os_family == 'RedHat'

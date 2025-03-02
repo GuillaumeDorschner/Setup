@@ -1,0 +1,16 @@
+- name: Setup macOS & Linux Environment
+  hosts: localhost
+  gather_facts: true
+
+  vars_prompt:
+    - name: install_ssh_keys
+      prompt: 'Do you want to install SSH keys? (yes/y default: no)'
+      private: no
+
+  vars:
+    install_ssh_keys: '{{ install_ssh_keys }}'
+
+  roles:
+    - role: system
+    - role: common
+    - role: software

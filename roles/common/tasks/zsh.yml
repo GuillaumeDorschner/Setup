@@ -1,0 +1,99 @@
+# macOS
+- name: Install Zsh and required dependencies | macOS
+  homebrew:
+    name:
+      - zsh
+      - neofetch
+    state: present
+  when: ansible_os_family == "Darwin"
+
+# Debian-based systems
+- name: Install Zsh and required dependencies | Debian
+  apt:
+    name:
+      - zsh
+      - neofetch
+    state: present
+    update_cache: yes
+  become: true
+  when: ansible_os_family == "Debian"
+
+# RedHat-based systems
+- name: Install Zsh and required dependencies | RedHat
+  yum:
+    name:
+      - zsh
+      - neofetch
+    state: present
+  become: true
+  when: ansible_os_family == "RedHat"
+
+# All
+- name: Get Zsh path
+  command: which zsh
+  register: zsh_path
+  changed_when: false
+
+- name: Change default shell to Zsh
+  user:
+    name: '{{ ansible_user_id }}'
+    shell: '{{ zsh_path.stdout }}'
+  become: true
+
+- name: Check if Oh My Zsh is installed
+  stat:
+    path: '{{ ansible_env.HOME }}/.oh-my-zsh'
+  register: ohmyzsh
+
+- name: Install Oh My Zsh
+  shell: bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  args:
+    creates: '{{ ansible_env.HOME }}/.oh-my-zsh'
+  when: not ohmyzsh.stat.exists
+
+- name: Ensure .config/neofetch directory exists
+  file:
+    path: '{{ ansible_env.HOME }}/.config/neofetch'
+    state: directory
+    mode: '0755'
+
+- name: Copy ASCII Art for Neofetch
+  copy:
+    src: files/ascii-art.txt
+    dest: '{{ ansible_env.HOME }}/.config/neofetch/ascii-art.txt'
+    mode: '0644'
+
+- name: Add general configuration to zshrc
+  blockinfile:
+    path: '{{ ansible_env.HOME }}/.zshrc'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK: General'
+    block: |
+      # General configuration added by Ansible
+      {{ lookup('file', '{{ role_path }}/files/zshrc/general') }}
+    create: yes
+    state: present
+
+- name: Add OS-specific configuration to zshrc
+  blockinfile:
+    path: '{{ ansible_env.HOME }}/.zshrc'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK: OS CONFIG'
+    block: |
+      # OS-specific configuration for {{ ansible_os_family }} added by Ansible
+      {{ lookup('file', '{{ role_path }}/files/zshrc/mac') if ansible_os_family == "Darwin" else 
+         lookup('file', '{{ role_path }}/files/zshrc/debian') if ansible_os_family == "Debian" else 
+         lookup('file', '{{ role_path }}/files/zshrc/redhat') if ansible_os_family == "RedHat" else 
+         '' }}
+    create: yes
+    state: present
+
+- name: Add Homebrew paths to zsh profile | macOS
+  blockinfile:
+    path: '{{ ansible_env.HOME }}/.zshrc'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK: Homebrew'
+    block: |
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+      export PATH="$(brew --prefix)/sbin:$PATH"
+      source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+    create: yes
+    state: present
+  when: ansible_os_family == "Darwin"

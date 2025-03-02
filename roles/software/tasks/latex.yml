@@ -1,0 +1,41 @@
+# MacOS
+- block:
+    - name: Install LaTeX | macOS
+      homebrew:
+        name: mactex
+        state: present
+  when: ansible_os_family == "Darwin"
+
+# Ubuntu
+- block:
+    - name: Install LaTeX on Ubuntu | Debian
+      apt:
+        name: texlive-full
+        state: present
+        update_cache: yes
+      become: true
+  when: ansible_os_family == "Debian"
+
+# Red Hat
+- block:
+    - name: Install EPEL repository on Red Hat | Redhat
+      yum:
+        name: epel-release
+        state: present
+      become: true
+
+    - name: Install LaTeX on Red Hat | Redhat
+      yum:
+        name: texlive
+        state: present
+      become: true
+  when: ansible_os_family == "RedHat"
+
+# All
+- name: Install LaTeX Workshop Extension in VS Code
+  shell: code --install-extension James-Yu.latex-workshop
+  args:
+    executable: /bin/bash
+  register: vscode_extensions
+  changed_when: "'already installed' not in vscode_extensions.stdout"
+  when: ansible_os_family == "Darwin"

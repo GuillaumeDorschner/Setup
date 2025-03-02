@@ -1,0 +1,44 @@
+# MacOS
+- block:
+    - name: Install Java | macOS
+      homebrew:
+        name: java
+        state: present
+
+    - name: Install PlantUML via Homebrew | macOS
+      homebrew:
+        name: plantuml
+        state: present
+
+    - name: Get PlantUML install path | macOS
+      command: brew --prefix plantuml
+      register: plantuml_path
+      changed_when: false
+
+    - name: Install PlantUML Extension in VS Code | macOS
+      shell: code --install-extension jebbs.plantuml
+      args:
+        executable: /bin/bash
+      register: vscode_extensions
+      changed_when: "'already installed' not in vscode_extensions.stdout"
+  when: ansible_os_family == 'Darwin'
+
+- name: Check if GUI
+  shell: '[[ -n "$(command -v xrandr)" || -n "$(command -v gnome-shell)" ]] && echo "desktop" || echo "server"'
+  register: system_type
+  changed_when: false
+  when: ansible_os_family in ['Debian', 'RedHat']
+# TODO: Add installation steps for Ubuntu, RedHat
+# Ubuntu
+
+# RedHat
+
+# All
+- block:
+    - name: Install PlantUML Extension in VS Code
+      shell: code --install-extension jebbs.plantuml
+      args:
+        executable: /bin/bash
+      register: vscode_extensions
+      changed_when: "'already installed' not in vscode_extensions.stdout"
+  when: system_type.stdout == "desktop"

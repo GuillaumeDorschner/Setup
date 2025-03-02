@@ -1,0 +1,59 @@
+# Macos
+- block:
+    - name: Check if Homebrew is installed | macOS
+      shell: command -v brew
+      register: homebrew_check
+      ignore_errors: true
+      changed_when: false
+
+    - name: Install Homebrew (if missing) | macOS
+      shell: |
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.zshrc
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+      args:
+        creates: /home/linuxbrew/.linuxbrew/bin/brew
+      when: homebrew_check.rc != 0
+
+    - name: Update Homebrew | macOS
+      homebrew:
+        update_homebrew: yes
+
+    - name: Upgrade Homebrew Packages | macOS
+      homebrew:
+        upgrade_all: yes
+  when: ansible_os_family in ["Darwin"]
+
+# Ubuntu
+- block:
+    - name: Update the apt package index | Debian
+      ansible.builtin.apt:
+        update_cache: yes
+      become: true
+      changed_when: false
+
+    - name: Upgrade all installed packages to their latest version | Debian
+      ansible.builtin.apt:
+        upgrade: dist
+      become: true
+
+    - name: Remove unnecessary packages | Debian
+      ansible.builtin.apt:
+        autoremove: yes
+      become: true
+  when: ansible_os_family == 'Debian'
+
+# RedHat
+- block:
+    - name: Ensure dnf/yum package manager is up to date | RedHat
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest
+      when: ansible_pkg_mgr == "dnf"
+
+    - name: Ensure yum package manager is up to date | RedHat
+      ansible.builtin.yum:
+        name: '*'
+        state: latest
+      when: ansible_pkg_mgr == "yum"
+  when: ansible_os_family == 'RedHat'

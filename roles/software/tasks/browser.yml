@@ -1,0 +1,67 @@
+# Macos
+- name: Install Brave Browser | macOS
+  community.general.homebrew_cask:
+    name: brave-browser
+    state: present
+  when: ansible_facts['os_family'] == 'Darwin'
+
+# ubuntu
+- block:
+    - name: Ensure apt-transport-https is installed | Debian
+      apt:
+        name: apt-transport-https
+        state: present
+      become: true
+
+    - name: Add Brave APT repository key | Debian
+      apt_key:
+        url: https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+        state: present
+
+    - name: Add Brave APT repository | Debian
+      apt_repository:
+        repo: deb [arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main
+        state: present
+
+    - name: Install Brave Browser | Debian
+      apt:
+        name: brave-browser
+        state: present
+  when: ansible_facts['os_family'] == 'Debian'
+
+# RedHat
+- block:
+    - name: Ensure dnf-plugins-core is installed | RedHat
+      dnf:
+        name: dnf-plugins-core
+        state: present
+
+    - name: Add Brave DNF repository | RedHat
+      ansible.builtin.dnf:
+        name: brave-browser
+        description: Brave Browser Repository
+        baseurl: https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+        enabled: yes
+        gpgcheck: yes
+
+    - name: Install Brave Browser | RedHat
+      dnf:
+        name: brave-browser
+        state: present
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: Set Brave as the default browser | Not macOS
+  block:
+    - name: Check current default browser | Not macOS
+      command: xdg-settings get default-web-browser
+      register: current_browser
+      changed_when: false
+
+    - name: Debug current browser setting | Not macOS
+      debug:
+        msg: 'Current default browser is: {{ current_browser.stdout }}'
+
+    - name: Set default browser to Brave if not already set | Not macOS
+      command: xdg-settings set default-web-browser brave-browser.desktop
+      when: "'brave' not in current_browser.stdout | lower"
+  when: ansible_facts['os_family'] in ['Debian', 'RedHat']

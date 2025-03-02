@@ -1,0 +1,124 @@
+# # Macos
+# - block:
+#     - name: Install pam_watchid if missing | macOS
+#       block:
+#         - block:
+#             - name: Clone pam_watchid repo | macOS
+#               git:
+#                 repo: 'https://github.com/biscuitehh/pam-watchid.git'
+#                 dest: '/tmp/pam-watchid'
+#               register: git_clone
+
+#             - name: Build and install pam_watchid | macOS
+#               command:
+#                 cmd: make install
+#                 chdir: '/tmp/pam-watchid'
+#               when: git_clone.changed
+#           when: not pam_watchid.stat.exists
+
+#     # - name: Enable sudo with Touch ID | macOS
+#     #   blockinfile:
+#     #     path: /etc/pam.d/sudo_local
+#     #     marker: '# {mark} ANSIBLE MANAGED BLOCK: Touch ID'
+#     #     create: yes
+#     #     block: |
+#     #       # sudo_local: local config file which survives system update and is included for sudo
+#     #       auth sufficient pam_tid.so
+#     #       auth sufficient pam_watchid.so "reason=execute a command as root"
+#     #     mode: '0644'
+#     #     owner: root
+#     #     group: wheel
+#   when: ansible_os_family == "Darwin"
+
+- name: Check if GUI
+  shell: '[[ -n "$(command -v xrandr)" || -n "$(command -v gnome-shell)" ]] && echo "desktop" || echo "server"'
+  register: system_type
+  changed_when: false
+
+# Debian
+- block:
+    - name: Install and enable UFW | Debian
+      apt:
+        name: ufw
+        state: present
+
+    - name: Allow essential services | Debian
+      ufw:
+        rule: allow
+        port: '{{ item }}'
+        proto: tcp
+      loop:
+        - 22 # SSH
+        - 80 # HTTP (if needed)
+        - 443 # HTTPS
+
+    - name: Enable UFW | Debian
+      ufw:
+        state: enabled
+
+    - name: Disable Root Login in SSH | Debian
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin no'
+      notify: Restart SSH
+      when: system_type.stdout == "desktop"
+
+    - name: Install unattended-upgrades | Debian
+      apt:
+        name: unattended-upgrades
+        state: present
+
+    - name: Enable unattended-upgrades | Debian
+      copy:
+        dest: /etc/apt/apt.conf.d/20auto-upgrades
+        content: |
+          APT::Periodic::Update-Package-Lists "1";
+          APT::Periodic::Unattended-Upgrade "1";
+  when: ansible_os_family == "Debian" and system_type.stdout == "desktop"
+
+# RedHat
+- block:
+    - name: Ensure firewalld is installed | RedHat
+      dnf:
+        name: firewalld
+        state: present
+
+    - name: Enable and start firewalld | RedHat
+      service:
+        name: firewalld
+        state: started
+        enabled: yes
+
+    - name: Allow essential services | RedHat
+      firewalld:
+        service: '{{ item }}'
+        permanent: yes
+        state: enabled
+      loop:
+        - ssh
+        - http
+        - https
+
+    - name: Reload firewall | RedHat
+      command: firewall-cmd --reload
+
+    - name: Disable Root Login in SSH | RedHat
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin no'
+      notify: Restart SSH
+      when: system_type.stdout == "desktop"
+
+    - name: Install dnf-automatic | RedHat
+      dnf:
+        name: dnf-automatic
+        state: present
+
+    - name: Enable automatic updates | RedHat
+      systemd:
+        name: dnf-automatic.timer
+        state: started
+        enabled: yes
+  when: ansible_os_family == "RedHat" and system_type.stdout == "desktop"

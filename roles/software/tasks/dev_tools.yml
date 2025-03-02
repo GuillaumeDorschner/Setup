@@ -1,0 +1,187 @@
+# MacOS
+- block:
+    - name: Install Development Tools | macOS
+      package:
+        name:
+          - python3
+          - rustup
+          - nvm
+        state: present
+
+    - name: Add NVM to zsh profile | macOS
+      blockinfile:
+        path: '{{ ansible_env.HOME }}/.zshrc'
+        marker: '# {mark} ANSIBLE MANAGED BLOCK: NVM'
+        block: |
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$(brew --prefix nvm)/nvm.sh" ] && \. "$(brew --prefix nvm)/nvm.sh"
+          [ -s "$(brew --prefix nvm)/etc/bash_completion.d/nvm" ] && \. "$(brew --prefix nvm)/etc/bash_completion.d/nvm"
+        create: yes
+        state: present
+  when: ansible_os_family == "Darwin"
+
+# Debian
+- block:
+    - name: Verify Node.js repository | Debian
+      stat:
+        path: /etc/apt/sources.list.d/nodesource.list
+      register: nodesource_repo
+
+    - name: Add Node.js repository | Debian
+      shell: |
+        curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+      args:
+        executable: /bin/bash
+      become: true
+      when: not nodesource_repo.stat.exists
+
+    - name: Install Node.js and npm | Debian
+      apt:
+        name:
+          - nodejs
+        state: present
+      become: true
+  when: ansible_os_family == 'Debian'
+
+# RedHat
+- block:
+    - name: Add Node.js repository | RedHat
+      ansible.builtin.yum_repository:
+        name: nodesource
+        description: 'Dépôt Node.js de NodeSource'
+        baseurl: 'https://rpm.nodesource.com/pub_18.x/el/$releasever/$basearch'
+        gpgcheck: yes
+        gpgkey: 'https://rpm.nodesource.com/pub/el/NODESOURCE-GPG-SIGNING-KEY-EL'
+        enabled: yes
+      become: true
+
+    - name: Install Node.js and npm | RedHat
+      yum:
+        name:
+          - nodejs
+        state: present
+      become: true
+  when: ansible_os_family == 'RedHat'
+
+- name: Verify Node.js and npm installation | All
+  command: node --version
+  register: node_version
+  changed_when: false
+# # TODO: NVM in the future
+# # Debian
+# - name: Install Development Tools (Debian)
+#   package:
+#     name:
+#       - python3
+#       - rustc
+#     state: present
+#   when: ansible_os_family == 'Debian'
+
+# # RedHat
+# - name: Install Development Tools (RedHat)
+#   package:
+#     name:
+#       - python3
+#       - rust
+#     state: present
+#   when: ansible_os_family == 'RedHat'
+
+# # NVM - Ubuntu & RedHat
+# - block:
+#     - name: Verify NVM installation
+#       shell: >
+#         zsh -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm --version"
+#       register: nvm_version
+#       ignore_errors: true
+#       changed_when: false
+
+#       # install NVM if not found
+#     - block:
+#         - name: Install NVM
+#           shell: >
+#             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | zsh
+#           args:
+#             creates: '{{ ansible_env.HOME }}/.nvm/nvm.sh'
+
+#         - name: Add NVM to zsh profile
+#           blockinfile:
+#             path: '{{ ansible_env.HOME }}/.zshrc'
+#             marker: '# {mark} ANSIBLE MANAGED BLOCK: NVM'
+#             block: |
+#               export NVM_DIR="$HOME/.nvm"
+#               [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+#               [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+#             create: yes
+#             state: present
+
+#         - name: Verify NVM installation
+#           shell: >
+#             zsh -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm --version"
+#           register: nvm_version
+#           failed_when: nvm_version.rc != 0
+#           args:
+#             executable: /bin/zsh
+#       when: nvm_version.rc != 0
+
+#     - name: Verify Node.js installation
+#       shell: >
+#         zsh -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm use --lts && node --version"
+#       register: node_version
+#       ignore_errors: true
+#       changed_when: false
+
+#     - block:
+#         - name: Install Node.js LTS
+#           shell: >
+#             zsh -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm install --lts && nvm use --lts"
+#           args:
+#             executable: /bin/zsh
+
+#         - name: Set default Node.js version
+#           shell: >
+#             zsh -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm alias default node"
+#           args:
+#             executable: /bin/zsh
+
+#         - name: Ensure Node.js & npm are in PATH
+#           blockinfile:
+#             path: '{{ ansible_env.HOME }}/.zshrc'
+#             block: |
+#               export NVM_DIR="$HOME/.nvm"
+#               [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+#               [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+#               export PATH="$NVM_DIR/versions/node/$(nvm version)/bin:$PATH"
+#             marker: '# {mark} ANSIBLE MANAGED BLOCK - Node.js PATH'
+
+#         - name: Reload Shell Environment
+#           shell: >
+#             zsh -c "source {{ ansible_env.HOME }}/.zshrc"
+#           changed_when: false
+
+#         - name: Verify Node.js installation
+#           shell: >
+#             zsh -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm use --lts && node --version"
+#           register: node_version
+#           failed_when: node_version.rc != 0
+#           changed_when: false
+#       when: node_version.rc != 0
+#   when: ansible_os_family in ['RedHat', 'Debian']
+
+# - name: Check if npm is already installed
+#   shell: >
+#     zsh -c "source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm use --lts && npm --version"
+#   register: npm_check
+#   changed_when: false
+#   ignore_errors: true
+
+# - name: Install npm global packages
+#   community.general.npm:
+#     name: '{{ npm_package }}'
+#     global: yes
+#   loop:
+#     - pnpm # "{{ 'pnpm@latest-10' if pnpm_check.rc != 0 else omit }}"
+#     - degit
+#     - nodemon
+#     - yarn
+#   loop_control:
+#     loop_var: npm_package

@@ -1,0 +1,71 @@
+# macOS
+- name: Install GitKraken | macOS
+  community.general.homebrew_cask:
+    name: gitkraken
+    state: present
+  when: ansible_os_family == "Darwin"
+
+- name: Get the latest GitKraken version from the website
+  block:
+    - name: Get the latest GitKraken version
+      shell: "curl -s https://www.gitkraken.com/download | sed -n 's/.*Latest release: \\([0-9.]*\\).*/\\1/p'"
+      register: latest_version
+      changed_when: false
+
+    - name: Store latest GitKraken version
+      set_fact:
+        gitkraken_latest_version: "{{ latest_version.stdout | default('') }}"
+  when: ansible_os_family != "Darwin"
+
+# Ubuntu
+- name: Install GitKraken | Debian
+  block:
+    - name: Get installed GitKraken version
+      command: dpkg-query -W -f='${Version}' gitkraken
+      register: installed_version
+      ignore_errors: true
+      changed_when: false
+
+    - name: Store installed GitKraken version | Debian
+      set_fact:
+        gitkraken_installed_version: "{{ installed_version.stdout | default('') }}"
+
+    - name: Download GitKraken .deb package | Debian
+      get_url:
+        url: https://release.gitkraken.com/linux/gitkraken-amd64.deb
+        dest: /tmp/gitkraken.deb
+      when: gitkraken_installed_version != gitkraken_latest_version
+
+    - name: Install GitKraken .deb package | Debian
+      apt:
+        deb: /tmp/gitkraken.deb
+        state: present
+      when: gitkraken_installed_version != gitkraken_latest_version
+      become: true
+  when: ansible_os_family == "Debian"
+
+# RedHat
+- name: Install GitKraken | RedHat
+  block:
+    - name: Get installed GitKraken version | RedHat
+      shell: "rpm -q --queryformat '%{VERSION}' gitkraken"
+      register: installed_version
+      ignore_errors: true
+      changed_when: false
+
+    - name: Store installed GitKraken version | RedHat
+      set_fact:
+        gitkraken_installed_version: "{{ installed_version.stdout | default('') }}"
+
+    - name: Download GitKraken .rpm package | RedHat
+      get_url:
+        url: https://release.gitkraken.com/linux/gitkraken-amd64.rpm
+        dest: /tmp/gitkraken.rpm
+      when: gitkraken_installed_version != gitkraken_latest_version
+
+    - name: Install GitKraken .rpm package | RedHat
+      dnf:
+        name: /tmp/gitkraken.rpm
+        state: present
+      when: gitkraken_installed_version != gitkraken_latest_version
+  when: ansible_os_family == "RedHat"

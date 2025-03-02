@@ -1,0 +1,12 @@
+# RedHat-based aliases and configurations
+if command -v nautilus &>/dev/null; then
+  alias finder='nautilus .'
+elif command -v dolphin &>/dev/null; then
+  alias finder='dolphin .'
+fi
+
+if command -v yum &>/dev/null; then
+  alias brewup='sudo yum update -y'
+elif command -v dnf &>/dev/null; then
+  alias brewup='sudo dnf update -y'
+fi

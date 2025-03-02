@@ -1,0 +1,28 @@
+# MacOS
+- name: Configure macOS system settings | macOS
+  block:
+    - name: Show all file extensions in Finder | macOS
+      community.general.osx_defaults:
+        domain: com.apple.finder
+        key: AppleShowAllExtensions
+        type: bool
+        value: true
+
+    - name: Require password immediately after screensaver starts | macOS
+      community.general.osx_defaults:
+        domain: com.apple.screensaver
+        key: askForPassword
+        type: int
+        value: 1
+
+    - name: Disable "Recent Apps" in Dock | macOS
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: show-recents
+        type: bool
+        value: false
+
+    - name: Restart Finder and Dock | macOS
+      command: killall Finder Dock
+      changed_when: false
+  when: ansible_os_family == "Darwin"
