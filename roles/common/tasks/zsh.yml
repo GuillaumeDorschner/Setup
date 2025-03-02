@@ -59,8 +59,14 @@
 
 - name: Copy ASCII Art for Neofetch
   copy:
-    src: files/ascii-art.txt
+    src: files/neofetch/ascii-art.txt
     dest: '{{ ansible_env.HOME }}/.config/neofetch/ascii-art.txt'
+    mode: '0644'
+
+- name: Copy Neofetch config
+  copy:
+    src: files/neofetch/config.conf
+    dest: '{{ ansible_env.HOME }}/.config/neofetch/config.conf'
     mode: '0644'
 
 - name: Add general configuration to zshrc
