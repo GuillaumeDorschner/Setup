@@ -55,7 +55,7 @@
     - name: Check current default browser | Not macOS
       command: xdg-settings get default-web-browser
       register: current_browser
-      argss:
+      args:
         executable: /bin/zsh
       changed_when: false
 
