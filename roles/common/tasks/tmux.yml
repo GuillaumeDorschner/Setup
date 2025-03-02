@@ -14,6 +14,7 @@
       - xclip
     state: present
     update_cache: yes
+  become: true
   when: ansible_os_family == "Debian"
 
 # RedHat
@@ -23,6 +24,7 @@
       - tmux
       - xclip
     state: present
+  become: true
   when: ansible_os_family == "RedHat"
 
 - name: Clone TPM (Tmux Plugin Manager)
@@ -41,10 +43,12 @@
     create: yes
     state: present
 
-- name: Reload Tmux Configuration
-  shell: 'tmux source-file {{ ansible_env.HOME }}/.tmux.conf'
-  ignore_errors: true
+- name: Reload Tmux Configuration (if Tmux is running)
+  shell: |
+    tmux has-session 2>/dev/null && tmux source-file {{ ansible_env.HOME }}/.tmux.conf || true
+  changed_when: false
 
-- name: Install Tmux Plugins
+- name: Install Tmux Plugins # TODO: make this idempotent
   shell: '{{ ansible_env.HOME }}/.tmux/plugins/tpm/bin/install_plugins'
   ignore_errors: true
+  changed_when: false
