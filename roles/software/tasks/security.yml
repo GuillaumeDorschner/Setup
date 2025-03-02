@@ -61,14 +61,15 @@
         state: enabled
       become: true
 
-    - name: Disable Root Login in SSH | Debian
-      lineinfile:
-        path: /etc/ssh/sshd_config
-        regexp: '^PermitRootLogin'
-        line: 'PermitRootLogin no'
-      notify: Restart SSH
-      become: true
-      when: system_type.stdout == "desktop"
+    # # TODO: Add a task to disable root login in SSH
+    # - name: Disable Root Login in SSH | Debian
+    #   lineinfile:
+    #     path: /etc/ssh/sshd_config
+    #     regexp: '^PermitRootLogin'
+    #     line: 'PermitRootLogin no'
+    #   notify: Restart SSH
+    #   become: true
+    #   when: system_type.stdout == "desktop"
 
     - name: Install unattended-upgrades | Debian
       apt:
