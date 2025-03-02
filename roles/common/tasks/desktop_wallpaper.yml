@@ -1,7 +1,34 @@
-# MacOS
+- name: Check if GUI is available | Debian, RedHat
+  shell: '[[ -n "$(command -v xrandr)" || -n "$(command -v gnome-shell)" ]] && echo "desktop" || echo "server"'
+  register: system_type
+  changed_when: false
+  when: ansible_os_family in ["Debian", "RedHat"]
 
-# Ubuntu
+# macOS
+- name: Set Wallpaper | macOS
+  shell: osascript -e 'tell application "Finder" to set desktop picture to POSIX file "{{ ansible_env.HOME }}/background.jpeg"'
+  when: ansible_os_family == "Darwin"
+
+# Debian
+- block:
+    - name: Install feh for lightweight background setting | Debian
+      apt:
+        name: feh
+        state: present
+      become: true
+
+    - name: Set Wallpaper using feh | Debian
+      shell: feh --bg-scale {{ ansible_env.HOME }}/background.jpeg
+  when: ansible_os_family == "Debian" and system_type.stdout == "desktop"
 
 # RedHat
+- block:
+    - name: Install feh for lightweight background setting | RedHat
+      dnf:
+        name: feh
+        state: present
+      become: true
 
-# TODO: add wallpaper
+    - name: Set Wallpaper using feh | RedHat
+      shell: feh --bg-scale {{ ansible_env.HOME }}/background.jpeg
+  when: ansible_os_family == "RedHat" and system_type.stdout == "desktop"
