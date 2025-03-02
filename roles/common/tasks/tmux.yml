@@ -1,0 +1,50 @@
+# Macos
+- name: Install tmux and dependencies | macOS
+  homebrew:
+    name:
+      - tmux
+    state: present
+  when: ansible_os_family == "Darwin"
+
+# Debian
+- name: Install tmux and dependencies | Debian
+  apt:
+    name:
+      - tmux
+      - xclip
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+# RedHat
+- name: Install tmux and dependencies | RedHat
+  yum:
+    name:
+      - tmux
+      - xclip
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Clone TPM (Tmux Plugin Manager)
+  git:
+    repo: 'https://github.com/tmux-plugins/tpm'
+    dest: '{{ ansible_env.HOME }}/.tmux/plugins/tpm'
+    update: yes
+
+- name: Add configuration to tmux.conf
+  blockinfile:
+    path: '{{ ansible_env.HOME }}/.tmux.conf'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK: tmux.conf'
+    block: |
+      # General configuration added by Ansible
+      {{ lookup('file', '{{ role_path }}/files/tmux/.tmux.conf') }}
+    create: yes
+    state: present
+
+- name: Reload Tmux Configuration
+  shell: 'tmux source-file {{ ansible_env.HOME }}/.tmux.conf'
+  ignore_errors: true
+
+- name: Install Tmux Plugins
+  shell: '{{ ansible_env.HOME }}/.tmux/plugins/tpm/bin/install_plugins'
+  ignore_errors: true
