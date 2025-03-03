@@ -1,0 +1,19 @@
+- name: Install git
+  package:
+    name: git
+    state: present
+  become: "{{ ansible_os_family != 'Darwin' }}"
+
+- name: Configure Git username
+  git_config:
+    name: user.name
+    scope: global
+    value: 'Guillaume Dorschner'
+  when: git_user_name is defined
+
+- name: Configure Git user email
+  git_config:
+    name: user.email
+    scope: global
+    value: 'guillaume.dorschner@icloud.com'
+  when: git_user_email is defined
