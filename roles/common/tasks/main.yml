@@ -4,7 +4,6 @@
     - zsh.yml
     - cli_tools.yml
     - git.yml
-    - dotfiles.yml
     - ssh_key.yml
     - tmux.yml
     - vim.yml
