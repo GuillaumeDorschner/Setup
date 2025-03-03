@@ -63,10 +63,22 @@
       become: true
   when: ansible_os_family == 'RedHat'
 
-- name: Verify Node.js and npm installation | All
+- name: Verify Node.js and npm installation
   command: node --version
   register: node_version
   changed_when: false
+
+- name: Create Dev directory if it does not exist
+  ansible.builtin.file:
+    path: '{{ ansible_env.HOME }}/Dev'
+    state: directory
+    mode: '0755'
+
+- name: Create Git directory if it does not exist
+  ansible.builtin.file:
+    path: '{{ ansible_env.HOME }}/Git'
+    state: directory
+    mode: '0755'
 # # TODO: NVM in the future
 # # Debian
 # - name: Install Development Tools (Debian)
