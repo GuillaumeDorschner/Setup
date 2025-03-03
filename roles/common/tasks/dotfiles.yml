@@ -1,9 +1,0 @@
-# - name: Copy dotfiles
-#   ansible.builtin.copy:
-#     src: '{{ item }}'
-#     dest: '~/{{ item | basename }}'
-#     mode: '0644'
-#   loop:
-#     - '{{ role_path }}/../files/.zshrc'
-#     - '{{ role_path }}/../files/.vimrc'
-#     - '{{ role_path }}/../files/.gitconfig'
