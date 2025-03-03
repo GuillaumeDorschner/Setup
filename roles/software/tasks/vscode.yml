@@ -100,7 +100,7 @@
 
 - block:
     - name: Install VSCode Extensions
-      shell: 'code --install-extension {{ item }}'
+      shell: 'code --install-extension {{ extension }}'
       loop:
         - adpyke.codesnap
         - astro-build.astro-vscode
@@ -158,6 +158,8 @@
         - yzhang.markdown-all-in-one
       args:
         executable: /bin/zsh
+      loop_control:
+        loop_var: extension
       register: vscode_extensions
       changed_when: "'already installed' not in vscode_extensions.stdout"
   when: ansible_os_family == "Darwin" or system_type.stdout == "desktop"

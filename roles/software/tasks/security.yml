@@ -48,12 +48,14 @@
     - name: Allow essential services | Debian
       ufw:
         rule: allow
-        port: '{{ item }}'
+        port: '{{ port }}'
         proto: tcp
       loop:
         - 22 # SSH
         - 80 # HTTP
         - 443 # HTTPS
+      loop_control:
+        loop_var: port
       become: true
 
     - name: Enable UFW | Debian
@@ -103,13 +105,15 @@
 
     - name: Allow essential services | RedHat
       firewalld:
-        service: '{{ item }}'
+        service: '{{ service }}'
         permanent: yes
         state: enabled
       loop:
         - ssh
         - http
         - https
+      loop_control:
+        loop_var: service
       become: true
 
     - name: Reload firewall | RedHat
