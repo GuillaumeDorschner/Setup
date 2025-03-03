@@ -23,16 +23,6 @@
       changed_when: "'already installed' not in vscode_extensions.stdout"
   when: ansible_os_family == 'Darwin'
 
-- name: Set default system type for macOS
-  set_fact:
-    system_type: 'desktop'
-  when: ansible_os_family == "Darwin"
-
-- name: Check if GUI
-  shell: '[[ -n "$(command -v xrandr)" || -n "$(command -v gnome-shell)" ]] && echo "desktop" || echo "server"'
-  register: system_type
-  changed_when: false
-  when: ansible_os_family in ['Debian', 'RedHat']
 # TODO: Add installation steps for Ubuntu, RedHat
 # Ubuntu
 
@@ -46,4 +36,4 @@
         executable: /bin/zsh
       register: vscode_extensions
       changed_when: "'already installed' not in vscode_extensions.stdout"
-  when: system_type.stdout == "desktop"
+  when: ansible_os_family == "Darwin"

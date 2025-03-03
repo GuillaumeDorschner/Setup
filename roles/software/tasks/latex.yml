@@ -31,6 +31,7 @@
       become: true
   when: ansible_os_family == "RedHat"
 
+# TODO: Add installation steps for Ubuntu, RedHat
 # All
 - name: Install LaTeX Workshop Extension in VS Code
   shell: code --install-extension James-Yu.latex-workshop
