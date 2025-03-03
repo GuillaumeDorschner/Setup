@@ -1,0 +1,6 @@
+# macOS
+- name: Installer mos | macOS
+  community.general.homebrew_cask:
+    name: mos
+    state: present
+  when: ansible_os_family == 'Darwin'
