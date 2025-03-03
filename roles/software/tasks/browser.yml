@@ -59,10 +59,6 @@
         executable: /bin/zsh
       changed_when: false
 
-    - name: Debug current browser setting | Not macOS
-      debug:
-        msg: 'Current default browser is: {{ current_browser.stdout }}'
-
     - name: Set default browser to Brave if not already set | Not macOS
       command: xdg-settings set default-web-browser brave-browser.desktop
       args:
