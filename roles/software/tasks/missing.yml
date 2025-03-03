@@ -1,0 +1,11 @@
+- name: what could be missing? | macOS
+  debug:
+    msg: |
+      You may be missing some software. Please check the following:
+      - login to dashlane
+      - office
+      - Magnet (in the App Store)
+      - terminal --> `Setting > Profile > Shell` When the shell exit to close if the shell exit cleanly
+      - Go to settings `Keyboard > Keyboard Shortcuts... > Services > Files and Folders` and check the following
+        https://github.com/GuillaumeDorschner/Setup-Mac/assets/44686652/b4b46d93-ae25-4372-a098-9a06ec860c7d
+  when: ansible_os_family == 'Darwin'
