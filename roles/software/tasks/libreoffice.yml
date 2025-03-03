@@ -1,0 +1,19 @@
+- name: Installer LibreOffice | macOS
+  community.general.homebrew_cask:
+    name: libreoffice
+    state: present
+  when: ansible_os_family == 'Darwin'
+
+- name: Installer LibreOffice | Debian
+  apt:
+    name: libreoffice
+    state: present
+  when: ansible_os_family == 'Debian'
+  become: true
+
+- name: Installer LibreOffice | RedHat
+  yum:
+    name: libreoffice
+    state: present
+  when: ansible_os_family == 'RedHat'
+  become: true
