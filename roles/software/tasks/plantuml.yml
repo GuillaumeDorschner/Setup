@@ -23,6 +23,11 @@
       changed_when: "'already installed' not in vscode_extensions.stdout"
   when: ansible_os_family == 'Darwin'
 
+- name: Set default system type for macOS
+  set_fact:
+    system_type: 'desktop'
+  when: ansible_os_family == "Darwin"
+
 - name: Check if GUI
   shell: '[[ -n "$(command -v xrandr)" || -n "$(command -v gnome-shell)" ]] && echo "desktop" || echo "server"'
   register: system_type
