@@ -1,0 +1,13 @@
+# macOS
+- block:
+    - name: Show hidden files in Finder on macOS
+      community.general.osx_defaults:
+        domain: com.apple.finder
+        key: AppleShowAllFiles
+        type: bool
+        value: true
+
+    - name: Restart Finder to apply changes
+      command: killall Finder
+      changed_when: false
+  when: ansible_os_family == 'Darwin'

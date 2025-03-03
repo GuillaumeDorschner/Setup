@@ -1,6 +1,9 @@
+# TODO: finish the role
 - name: Check if GUI is available | Debian, RedHat
   shell: '[[ -n "$(command -v xrandr)" || -n "$(command -v gnome-shell)" ]] && echo "desktop" || echo "server"'
   register: system_type
+  args:
+    executable: /bin/zsh
   changed_when: false
   when: ansible_os_family in ["Debian", "RedHat"]
 
