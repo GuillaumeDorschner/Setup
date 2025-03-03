@@ -1,0 +1,5 @@
+- name: Installer notion | macOS
+  community.general.homebrew_cask:
+    name: notion
+    state: present
+  when: ansible_os_family == 'Darwin'
