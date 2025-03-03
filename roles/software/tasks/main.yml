@@ -11,3 +11,7 @@
     - gitkraken.yml
     - browser.yml
     - dock.yml
+    - mos.yml
+    - notion.yml
+    - libreoffice.yml
+    - missing.yml
