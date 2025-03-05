@@ -1,37 +1,51 @@
-# # TODO: finish the role
-# - name: Check if GUI is available | Debian, RedHat
-#   shell: '[[ -n "$(command -v xrandr)" || -n "$(command -v gnome-shell)" ]] && echo "desktop" || echo "server"'
-#   register: system_type
-#   args:
-#     executable: /bin/zsh
-#   changed_when: false
-#   when: ansible_os_family in ["Debian", "RedHat"]
+- name: Check if GUI is available | Debian, RedHat
+  shell: |
+    if command -v xrandr &>/dev/null || command -v gnome-shell &>/dev/null; then
+      echo "desktop"
+    else
+      echo "server"
+    fi
+  register: system_type
+  args:
+    executable: /bin/bash
+  changed_when: false
+  when: ansible_os_family in ["Debian", "RedHat"]
 
-# # macOS
-# - name: Set Wallpaper | macOS
-#   shell: osascript -e 'tell application "Finder" to set desktop picture to POSIX file "{{ ansible_env.HOME }}/background.jpeg"'
-#   when: ansible_os_family == "Darwin"
+# macOS
+- block:
+    - name: Check current wallpaper | macOS
+      shell: osascript -e 'tell application "System Events" to get picture of desktop 1'
+      register: wallpaper_uri
+      changed_when: false
 
-# # Debian
-# - block:
-#     - name: Install feh for lightweight background setting | Debian
-#       apt:
-#         name: feh
-#         state: present
-#       become: true
+    - name: Get checksum of current wallpaper
+      stat:
+        path: '{{ wallpaper_uri.stdout | trim }}'
+        checksum_algorithm: sha256
+      register: file1_stat
+      when: wallpaper_uri.stdout | length > 0
 
-#     - name: Set Wallpaper using feh | Debian
-#       shell: feh --bg-scale {{ ansible_env.HOME }}/background.jpeg
-#   when: ansible_os_family == "Debian" and system_type.stdout == "desktop"
+    - name: Get checksum of target wallpaper
+      stat:
+        path: '{{ role_path }}/files/background.jpeg'
+        checksum_algorithm: sha256
+      register: file2_stat
 
-# # RedHat
-# - block:
-#     - name: Install feh for lightweight background setting | RedHat
-#       dnf:
-#         name: feh
-#         state: present
-#       become: true
+    - name: Set Wallpaper | macOS
+      shell: osascript -e 'tell application "System Events" to set picture of desktop 1 to POSIX file "{{ role_path }}/files/background.jpeg"'
+      when: file1_stat.stat.checksum != file2_stat.stat.checksum
+  when: ansible_os_family == "Darwin"
 
-#     - name: Set Wallpaper using feh | RedHat
-#       shell: feh --bg-scale {{ ansible_env.HOME }}/background.jpeg
-#   when: ansible_os_family == "RedHat" and system_type.stdout == "desktop"
+# Debian & Ubuntu
+- block:
+    - name: Get current wallpaper URI | Debian & Ubuntu
+      shell: gsettings get org.gnome.desktop.background picture-uri
+      register: wallpaper_uri
+      changed_when: false
+
+    - name: Set wallpaper | Debian & Ubuntu
+      copy:
+        src: '{{ role_path }}/files/background.jpeg'
+        dest: '{{ ansible_env.HOME }}/.config/background'
+        mode: '0644'
+  when: ansible_os_family in ["Debian", "RedHat"] and system_type.stdout == "desktop"
