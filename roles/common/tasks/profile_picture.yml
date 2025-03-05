@@ -1,7 +1,94 @@
-# MacOS
+# macOS
+- name: Set user profile picture | macOS
+  when: ansible_facts['os_family'] == "Darwin"
+  block:
+    - name: Ensure destination directory exists | macOS
+      file:
+        path: '{{ ansible_env.HOME }}/Pictures'
+        state: directory
+        mode: '0755'
+        owner: '{{ ansible_user }}'
+        group: '{{ ansible_user }}'
 
-# Ubuntu
+    - name: Copy profile picture to user's Pictures directory | macOS
+      copy:
+        src: '{{ role_path }}/files/profile_picture.png'
+        dest: '{{ ansible_env.HOME }}/Pictures/profile_picture.png'
+        mode: '0644'
+        owner: '{{ ansible_user }}'
+        group: '{{ ansible_user }}'
+
+    - name: Get current profile picture path | macOS
+      shell: dscl . -read ~/ Picture | awk '{print $2}'
+      register: current_profile_picture
+      changed_when: false
+      ignore_errors: true
+
+    - name: Set profile picture using AppleScript | macOS
+      shell: |
+        osascript -e 'tell application "System Events" to set picture of every desktop to POSIX file "{{ ansible_env.HOME }}/Pictures/profile_picture.png"'
+      when: current_profile_picture.stdout != "{{ ansible_env.HOME }}/Pictures/profile_picture.png"
+
+# Debian
+- name: Set user profile picture | Debian
+  when: ansible_facts['os_family'] == "Debian"
+  block:
+    - name: Copy profile picture to .face | Debian
+      copy:
+        src: '{{ role_path }}/files/profile_picture.png'
+        dest: '{{ ansible_env.HOME }}/.face'
+        mode: '0644'
+        owner: '{{ ansible_user }}'
+        group: '{{ ansible_user }}'
+        become: true
 
 # RedHat
+- name: Set user profile picture | RedHat
+  when: ansible_facts['os_family'] == "RedHat"
+  become: true
+  block:
+    - name: Ensure AccountsService directories exist | RedHat
+      file:
+        path: '/var/lib/AccountsService/{{ item }}'
+        state: directory
+        mode: '0755'
+        owner: 'root'
+        group: 'root'
+      loop:
+        - icons
+        - users
+      become: true
 
-# TODO: add profile picture
+    - name: Copy profile picture to AccountsService icons | RedHat
+      copy:
+        src: '{{ role_path }}/files/profile_picture.png'
+        dest: '/var/lib/AccountsService/icons/{{ ansible_user }}'
+        mode: '0644'
+        owner: 'root'
+        group: 'root'
+      become: true
+
+    - name: Check if AccountsService user file exists
+      stat:
+        path: '/var/lib/AccountsService/users/{{ ansible_user }}'
+      register: accounts_service_file
+      become: true
+
+    - name: Create user configuration file for AccountsService | RedHat
+      copy:
+        dest: '/var/lib/AccountsService/users/{{ ansible_user }}'
+        content: |
+          [User]
+          Icon=/var/lib/AccountsService/icons/{{ ansible_user }}
+        mode: '0644'
+        owner: 'root'
+        group: 'root'
+      become: true
+      when: not accounts_service_file.stat.exists
+
+    - name: Restart AccountsService daemon | RedHat
+      systemd:
+        name: accounts-daemon
+        state: restarted
+        enabled: yes
+      become: true
