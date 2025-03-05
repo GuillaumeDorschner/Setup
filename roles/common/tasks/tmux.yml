@@ -48,7 +48,7 @@
     tmux has-session 2>/dev/null && tmux source-file {{ ansible_env.HOME }}/.tmux.conf || true
   changed_when: false
 
-- name: Install Tmux Plugins # TODO: make this idempotent
+- name: Install Tmux Plugins
   shell: '{{ ansible_env.HOME }}/.tmux/plugins/tpm/bin/install_plugins'
   ignore_errors: true
   changed_when: false

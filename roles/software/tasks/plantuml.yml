@@ -13,25 +13,39 @@
     - name: Get PlantUML install path | macOS
       command: brew --prefix plantuml
       register: plantuml_path
+      args:
+        executable: /bin/zsh
       changed_when: false
 
-    - name: Install PlantUML Extension in VS Code | macOS
-      shell: code --install-extension jebbs.plantuml
-      args:
-        executable: /bin/bash
-      register: vscode_extensions
-      changed_when: "'already installed' not in vscode_extensions.stdout"
-  when: ansible_os_family == 'Darwin'
-
-# TODO: Add installation steps for Ubuntu, RedHat
 # Ubuntu
+- name: Install Java & PlantUML | Ubuntu
+  when: ansible_os_family == "Debian"
+  block:
+    - name: Install Java and dependencies | Debian
+      apt:
+        name:
+          - default-jre
+          - plantuml
+        state: present
+        update_cache: yes
+      become: true
 
 # RedHat
+- name: Install Java & plantuml | RedHat
+  when: ansible_os_family == "RedHat"
+  block:
+    - name: Install Java and dependencies | RedHat
+      yum:
+        name:
+          - java-11-openjdk
+          - plantuml
+        state: present
+      become: true
 
 # All
 - block:
     - name: Install PlantUML Extension in VS Code
-      shell: code --install-extension jebbs.plantuml
+      command: code --install-extension jebbs.plantuml
       args:
         executable: /bin/zsh
       register: vscode_extensions

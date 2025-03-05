@@ -44,9 +44,9 @@
         port: '{{ port }}'
         proto: tcp
       loop:
-        - 22 # SSH
-        - 80 # HTTP
-        - 443 # HTTPS
+        - 22
+        - 80
+        - 443
       loop_control:
         loop_var: port
       become: true
@@ -55,16 +55,6 @@
       ufw:
         state: enabled
       become: true
-
-    # # TODO: Add a task to disable root login in SSH
-    # - name: Disable Root Login in SSH | Debian
-    #   lineinfile:
-    #     path: /etc/ssh/sshd_config
-    #     regexp: '^PermitRootLogin'
-    #     line: 'PermitRootLogin no'
-    #   notify: Restart SSH
-    #   become: true
-    #   when: type_of_system == "desktop"
 
     - name: Install unattended-upgrades | Debian
       apt:
