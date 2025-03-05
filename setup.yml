@@ -8,7 +8,8 @@
       private: no
 
   vars:
-    install_ssh_keys: '{{ install_ssh_keys }}'
+    install_ssh_keys: '{{ install_ssh_keys }}' # yes or no (default: no)
+    type_of_system: 'desktop' # desktop or server
 
   roles:
     - role: system

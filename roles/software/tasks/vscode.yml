@@ -90,14 +90,6 @@
         mode: '0644'
   when: ansible_os_family == "RedHat"
 
-- name: Check if GUI  | Debian & RedHat
-  shell: '[[ -n "$(command -v xrandr)" || -n "$(command -v gnome-shell)" ]] && echo "desktop" || echo "server"'
-  register: system_type
-  changed_when: false
-  args:
-    executable: /bin/zsh
-  when: ansible_os_family in ['Debian', 'RedHat']
-
 - block:
     - name: Install VSCode Extensions
       shell: 'code --install-extension {{ extension }}'
@@ -162,4 +154,4 @@
         loop_var: extension
       register: vscode_extensions
       changed_when: "'already installed' not in vscode_extensions.stdout"
-  when: ansible_os_family == "Darwin" or system_type.stdout == "desktop"
+  when: ansible_os_family == "Darwin" or type_of_system == "desktop"

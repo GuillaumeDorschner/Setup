@@ -30,13 +30,6 @@
 #     #     group: wheel
 #   when: ansible_os_family == "Darwin"
 
-- name: Check if GUI
-  shell: '[[ -n "$(command -v xrandr)" || -n "$(command -v gnome-shell)" ]] && echo "desktop" || echo "server"'
-  register: system_type
-  args:
-    executable: /bin/zsh
-  changed_when: false
-
 # Debian
 - block:
     - name: Install and enable UFW | Debian
@@ -71,7 +64,7 @@
     #     line: 'PermitRootLogin no'
     #   notify: Restart SSH
     #   become: true
-    #   when: system_type.stdout == "desktop"
+    #   when: type_of_system == "desktop"
 
     - name: Install unattended-upgrades | Debian
       apt:
@@ -86,7 +79,7 @@
           APT::Periodic::Update-Package-Lists "1";
           APT::Periodic::Unattended-Upgrade "1";
       become: true
-  when: ansible_os_family == "Debian" and system_type.stdout == "desktop"
+  when: ansible_os_family == "Debian" and type_of_system == "desktop"
 
 # RedHat
 - block:
@@ -127,7 +120,7 @@
         line: 'PermitRootLogin no'
       notify: Restart SSH
       become: true
-      when: system_type.stdout == "desktop"
+      when: type_of_system == "desktop"
 
     - name: Install dnf-automatic | RedHat
       dnf:
@@ -141,4 +134,4 @@
         state: started
         enabled: yes
       become: true
-  when: ansible_os_family == "RedHat" and system_type.stdout == "desktop"
+  when: ansible_os_family == "RedHat" and type_of_system == "desktop"

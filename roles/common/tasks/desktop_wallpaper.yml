@@ -1,16 +1,3 @@
-- name: Check if GUI is available | Debian, RedHat
-  shell: |
-    if command -v xrandr &>/dev/null || command -v gnome-shell &>/dev/null; then
-      echo "desktop"
-    else
-      echo "server"
-    fi
-  register: system_type
-  args:
-    executable: /bin/bash
-  changed_when: false
-  when: ansible_os_family in ["Debian", "RedHat"]
-
 # macOS
 - block:
     - name: Check current wallpaper | macOS
@@ -48,4 +35,4 @@
         src: '{{ role_path }}/files/background.jpeg'
         dest: '{{ ansible_env.HOME }}/.config/background'
         mode: '0644'
-  when: ansible_os_family in ["Debian", "RedHat"] and system_type.stdout == "desktop"
+  when: ansible_os_family in ["Debian", "RedHat"] and type_of_system == "desktop"
