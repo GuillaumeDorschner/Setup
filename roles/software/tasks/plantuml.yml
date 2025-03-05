@@ -1,5 +1,7 @@
 # MacOS
-- block:
+- name: Install PlantUML | macOS
+  when: ansible_os_family == "Darwin"
+  block:
     - name: Install Java | macOS
       homebrew:
         name: java
@@ -43,11 +45,9 @@
       become: true
 
 # All
-- block:
-    - name: Install PlantUML Extension in VS Code
-      command: code --install-extension jebbs.plantuml
-      args:
-        executable: /bin/zsh
-      register: vscode_extensions
-      changed_when: "'already installed' not in vscode_extensions.stdout"
-  when: ansible_os_family == "Darwin"
+- name: Install PlantUML Extension in VS Code
+  command: code --install-extension jebbs.plantuml
+  args:
+    executable: /bin/zsh
+  register: vscode_extensions
+  changed_when: "'already installed' not in vscode_extensions.stdout"
