@@ -62,7 +62,7 @@ setup_ansible() {
 run_ansible() {
     echo "🚀 Running Ansible playbook..."
     cd "$SETUP_DIR"
-    ansible-playbook ~/Setup/setup.yml --ask-vault-pass --ask-become-pass
+    ansible-playbook -i inventory.ini ~/Setup/setup.yml --ask-vault-pass --ask-become-pass
 }
 
 if ! command -v ansible >/dev/null 2>&1; then
