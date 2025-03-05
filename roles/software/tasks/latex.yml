@@ -34,7 +34,7 @@
 # TODO: Add installation steps for Ubuntu, RedHat
 # All
 - name: Install LaTeX Workshop Extension in VS Code
-  shell: code --install-extension James-Yu.latex-workshop
+  command: code --install-extension James-Yu.latex-workshop
   args:
     executable: /bin/zsh
   register: vscode_extensions

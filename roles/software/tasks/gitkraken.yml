@@ -1,10 +1,3 @@
-# macOS
-- name: Install GitKraken | macOS
-  community.general.homebrew_cask:
-    name: gitkraken
-    state: present
-  when: ansible_os_family == "Darwin"
-
 - name: Get the latest GitKraken version from the website
   block:
     - name: Get the latest GitKraken version
@@ -18,6 +11,13 @@
       set_fact:
         gitkraken_latest_version: "{{ latest_version.stdout | default('') }}"
   when: ansible_os_family != "Darwin"
+
+# macOS
+- name: Install GitKraken | macOS
+  community.general.homebrew_cask:
+    name: gitkraken
+    state: present
+  when: ansible_os_family == "Darwin"
 
 # Ubuntu
 - name: Install GitKraken | Debian
@@ -38,13 +38,13 @@
       get_url:
         url: https://release.gitkraken.com/linux/gitkraken-amd64.deb
         dest: /tmp/gitkraken.deb
-      when: gitkraken_installed_version != gitkraken_latest_version
+      when: gitkraken_installed_version != gitkraken_latest_version and gitkraken_latest_version != ''
 
     - name: Install GitKraken .deb package | Debian
       apt:
         deb: /tmp/gitkraken.deb
         state: present
-      when: gitkraken_installed_version != gitkraken_latest_version
+      when: gitkraken_installed_version != gitkraken_latest_version and gitkraken_latest_version != ''
       become: true
   when: ansible_os_family == "Debian"
 
@@ -52,7 +52,7 @@
 - name: Install GitKraken | RedHat
   block:
     - name: Get installed GitKraken version | RedHat
-      shell: "rpm -q --queryformat '%{VERSION}' gitkraken"
+      command: "rpm -q --queryformat '%{VERSION}' gitkraken"
       register: installed_version
       args:
         executable: /bin/zsh
@@ -67,11 +67,11 @@
       get_url:
         url: https://release.gitkraken.com/linux/gitkraken-amd64.rpm
         dest: /tmp/gitkraken.rpm
-      when: gitkraken_installed_version != gitkraken_latest_version
+      when: gitkraken_installed_version != gitkraken_latest_version and gitkraken_latest_version != ''
 
     - name: Install GitKraken .rpm package | RedHat
       dnf:
         name: /tmp/gitkraken.rpm
         state: present
-      when: gitkraken_installed_version != gitkraken_latest_version
+      when: gitkraken_installed_version != gitkraken_latest_version and gitkraken_latest_version != ''
   when: ansible_os_family == "RedHat"
