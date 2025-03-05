@@ -7,9 +7,7 @@
         src: '{{ role_path }}/files/profile_picture.png'
         dest: '{{ ansible_env.HOME }}/.face'
         mode: '0644'
-        owner: '{{ ansible_user_id }}'
-        group: '{{ ansible_user_id }}'
-        become: true
+      become: true
 
 # RedHat
 - name: Set user profile picture | RedHat
@@ -21,8 +19,6 @@
         path: '/var/lib/AccountsService/{{ item }}'
         state: directory
         mode: '0755'
-        owner: 'root'
-        group: 'root'
       loop:
         - icons
         - users
@@ -33,8 +29,6 @@
         src: '{{ role_path }}/files/profile_picture.png'
         dest: '/var/lib/AccountsService/icons/{{ ansible_user_id }}'
         mode: '0644'
-        owner: 'root'
-        group: 'root'
       become: true
 
     - name: Check if AccountsService user file exists
@@ -50,8 +44,6 @@
           [User]
           Icon=/var/lib/AccountsService/icons/{{ ansible_user_id }}
         mode: '0644'
-        owner: 'root'
-        group: 'root'
       become: true
       when: not accounts_service_file.stat.exists
 
