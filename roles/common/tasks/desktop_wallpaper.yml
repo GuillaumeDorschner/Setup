@@ -1,18 +1,24 @@
 # macOS
 - block:
     - name: Check current wallpaper | macOS
-      shell: osascript -e 'tell application "System Events" to get picture of desktop 1'
+      shell: osascript -e 'tell application "System Events" to get picture of desktop 1' | sed 's/^ *//;s/ *$//'
       register: wallpaper_uri
       changed_when: false
 
-    - name: Get checksum of current wallpaper
+    - name: Ensure wallpaper path is valid | macOS
+      stat:
+        path: '{{ wallpaper_uri.stdout | trim }}'
+      register: file1_stat_check
+      when: wallpaper_uri.stdout | length > 0
+
+    - name: Get checksum of current wallpaper (if exists) | macOS
       stat:
         path: '{{ wallpaper_uri.stdout | trim }}'
         checksum_algorithm: sha256
       register: file1_stat
-      when: wallpaper_uri.stdout | length > 0
+      when: file1_stat_check.stat.exists | default(false)
 
-    - name: Get checksum of target wallpaper
+    - name: Get checksum of target wallpaper | macOS
       stat:
         path: '{{ role_path }}/files/background.jpeg'
         checksum_algorithm: sha256
@@ -20,7 +26,9 @@
 
     - name: Set Wallpaper | macOS
       shell: osascript -e 'tell application "System Events" to set picture of desktop 1 to POSIX file "{{ role_path }}/files/background.jpeg"'
-      when: file1_stat.stat.checksum != file2_stat.stat.checksum
+      when:
+        - file1_stat_check.stat.exists | default(false)
+        - file1_stat.stat.checksum | default('') != file2_stat.stat.checksum | default('')
   when: ansible_os_family == "Darwin"
 
 # Debian & Ubuntu
