@@ -31,8 +31,6 @@
       become: true
   when: ansible_os_family == "RedHat"
 
-# TODO: Add installation steps for Ubuntu, RedHat
-# All
 - name: Install LaTeX Workshop Extension in VS Code
   command: code --install-extension James-Yu.latex-workshop
   args:
@@ -40,3 +38,23 @@
   register: vscode_extensions
   changed_when: "'already installed' not in vscode_extensions.stdout"
   when: ansible_os_family == "Darwin" or type_of_system == "desktop"
+
+- name: Add PLANTUML_JAR to zshrc | macOS
+  blockinfile:
+    path: '{{ ansible_env.HOME }}/.zshrc'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK: PLANTUML'
+    block: |
+      export PLANTUML_JAR=$(brew --prefix plantuml)/libexec/plantuml.jar
+    create: yes
+    state: present
+  when: ansible_os_family == "Darwin"
+
+- name: Add PLANTUML_JAR to zshrc | Debian, RedHat
+  blockinfile:
+    path: '{{ ansible_env.HOME }}/.zshrc'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK: PLANTUML'
+    block: |
+      export PLANTUML_JAR="/opt/plantuml/plantuml.jar"
+    create: yes
+    state: present
+  when: ansible_os_family in ["Debian", "RedHat"]
