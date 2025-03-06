@@ -54,6 +54,7 @@
         repo: 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /'
         state: present
         filename: kubernetes
+      become: true
 
     - name: Update apt package index
       apt:
