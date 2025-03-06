@@ -94,7 +94,7 @@
         regexp: '"markdown-preview-enhanced.plantumlJarPath":\s*".*/plantuml.jar"'
         line: '  "markdown-preview-enhanced.plantumlJarPath": "/opt/plantuml/plantuml.jar",'
         backrefs: yes
-
+    # TODO: change the settings.json to make it idempotent
     - name: Update PlantUML jar path in VS Code settings.json | Debian, RedHat
       ansible.builtin.lineinfile:
         path: '{{ ansible_env.HOME }}/.config/Code/User/settings.json'
