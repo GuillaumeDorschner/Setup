@@ -39,4 +39,4 @@
     executable: /bin/zsh
   register: vscode_extensions
   changed_when: "'already installed' not in vscode_extensions.stdout"
-  when: ansible_os_family == "Darwin"
+  when: ansible_os_family == "Darwin" or type_of_system == "desktop"
