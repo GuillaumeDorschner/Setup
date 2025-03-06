@@ -1,58 +1,55 @@
 # MacOS
-- name: Install Kind | macOS
+- name: Install kubernetes | macOS
   when: ansible_os_family == 'Darwin'
   block:
-    - name: Install Kind | macOS
-      homebrew:
-        name: kind
-        state: present
     - name: Install kubectl | macOS
       homebrew:
         name: kubernetes-cli
+        state: present
+    - name: Install minikube | macOS
+      homebrew:
+        name: kind
         state: present
     - name: Install k9s | macOS
       homebrew:
         name: k9s
         state: present
-# - block: # TODO: Add installation steps for Ubuntu, RedHat
-#     - name: Install Kind
-#       shell: |
-#         curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64
-#         chmod +x ./kind
-#         sudo mv ./kind /usr/local/bin/kind
 
-#     - name: Check kubectl Install
-#       shell: |
-#         kubectl version --client
-#       register: kubectl_version
-#       ignore_errors: yes
+# Debian
+- name: Install Kubernetes | Debian
+  when: ansible_os_family == 'Debian'
+  block:
+    - name: Ensure /etc/apt/keyrings directory exists
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
 
-#     - name: Install kubectl
-#       shell: |
-#         curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.21.0/bin/linux/amd64/kubectl
-#         chmod +x ./kubectl
-#         sudo mv ./kubectl /usr/local/bin/kubectl
-#       when: kubectl_version.rc != 0
+    - name: Check if Kubernetes GPG key is already present
+      stat:
+        path: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+      register: kubernetes_gpg_key
 
-#     - name: Check Helm Install
-#       shell: |
-#         helm version
-#       args:
-#         executable: /bin/zsh
-#       register: helm_version
-#       ignore_errors: yes
+    - name: Download and install Kubernetes GPG key if not present
+      get_url:
+        url: https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key
+        dest: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+        mode: '0644'
+      when: not kubernetes_gpg_key.stat.exists
 
-#     - name: Install Helm
-#       shell: |
-#         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-#         chmod 700 get_helm.sh
-#         ./get_helm.sh
-#       args:
-#         executable: /bin/zsh
-#       when: helm_version.rc != 0
+    - name: Add Kubernetes apt repository
+      apt_repository:
+        repo: 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /'
+        state: present
+        filename: kubernetes
 
-#     - name: Install K9S
-#       homebrew:
-#         name: k9s
-#         state: present
-#   when: ansible_os_family != 'Darwin'
+    - name: Update apt package index
+      apt:
+        update_cache: yes
+
+    - name: Install kubectl
+      apt:
+        name: kubectl
+        state: present
+# RedHat
+

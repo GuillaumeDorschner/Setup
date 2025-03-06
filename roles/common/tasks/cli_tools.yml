@@ -21,6 +21,8 @@
       package:
         name:
           - apt-transport-https
+          - ca-certificates
+          - gnupg
         state: present
       become: "{{ ansible_os_family != 'Darwin' }}"
   when: ansible_os_family == 'Debian'
