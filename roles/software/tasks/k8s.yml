@@ -19,104 +19,179 @@
 - name: Install Kubernetes | Debian
   when: ansible_os_family == 'Debian'
   block:
-    - name: Ensure /etc/apt/keyrings directory exists
+    - name: Ensure /etc/apt/keyrings directory exists | Debian
       file:
         path: /etc/apt/keyrings
         state: directory
         mode: '0755'
 
-    - name: Check if Kubernetes GPG key is already present
+    - name: Check if Kubernetes GPG key is already present | Debian
       stat:
         path: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
       register: kubernetes_gpg_key
 
-    - name: Download Kubernetes GPG key if not present
+    - name: Download Kubernetes GPG key if not present | Debian
       get_url:
         url: https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key
         dest: /tmp/kubernetes-apt-keyring.gpg
         mode: '0644'
       when: not kubernetes_gpg_key.stat.exists
 
-    - name: Convert Kubernetes GPG key to dearmored format
+    - name: Convert Kubernetes GPG key to dearmored format | Debian
       command: gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /tmp/kubernetes-apt-keyring.gpg
       args:
         creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
       become: true
       when: not kubernetes_gpg_key.stat.exists
 
-    - name: Set permissions for Kubernetes signing key
+    - name: Set permissions for Kubernetes signing key | Debian
       file:
         path: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
         mode: '0644'
       when: not kubernetes_gpg_key.stat.exists
 
-    - name: Add Kubernetes apt repository
+    - name: Add Kubernetes apt repository | Debian
       apt_repository:
         repo: 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /'
         state: present
         filename: kubernetes
       become: true
 
-    - name: Update apt package index
+    - name: Update apt package index | Debian
       apt:
         update_cache: yes
       changed_when: false
       become: true
 
-    - name: Install kubectl
+    - name: Install kubectl | Debian
       apt:
         name: kubectl
         state: present
       become: true
 
-    - name: Check if Minikube is already installed
+    - name: Check if Minikube is already installed | Debian
       command: minikube version
       register: minikube_check
       ignore_errors: true
       changed_when: false
 
-    - name: Download the latest Minikube Debian package
+    - name: Download the latest Minikube Debian package | Debian
       get_url:
         url: 'https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb'
         dest: '/tmp/minikube_latest_amd64.deb'
         mode: '0644'
       when: minikube_check.rc != 0
 
-    - name: Install Minikube package
+    - name: Install Minikube package | Debian
       apt:
         deb: '/tmp/minikube_latest_amd64.deb'
         state: present
       become: true
       when: minikube_check.rc != 0
 
-    - name: Verify Minikube installation
+    - name: Verify Minikube installation | Debian
       command: minikube version
       register: minikube_version
       changed_when: false
 
-    - name: Check if k9s is already installed
+    - name: Check if k9s is already installed | Debian
       command: k9s version
       register: k9s_check
       ignore_errors: true
       changed_when: false
 
-    - name: Download the latest k9s Debian package
+    - name: Download the latest k9s Debian package | Debian
       get_url:
         url: 'https://github.com/derailed/k9s/releases/download/v0.32.7/k9s_linux_amd64.deb'
         dest: '/tmp/k9s_linux_amd64.deb'
         mode: '0644'
       when: k9s_check.rc != 0
 
-    - name: Install k9s package
+    - name: Install k9s package | Debian
       apt:
         deb: '/tmp/k9s_linux_amd64.deb'
         state: present
       become: true
       when: k9s_check.rc != 0
 
-    - name: Verify k9s installation
+    - name: Verify k9s installation | Debian
       command: k9s version
       register: k9s_version
       changed_when: false
-# RedHat
 
+# RedHat
+- name: Install Kubernetes | RedHat
+  when: ansible_os_family == 'RedHat'
+  block:
+    - name: Ensure /etc/yum.repos.d directory exists | RedHat
+      file:
+        path: /etc/yum.repos.d
+        state: directory
+        mode: '0755'
+      become: true
+
+    - name: Add Kubernetes YUM repository | RedHat
+      yum_repository:
+        name: kubernetes
+        description: Kubernetes YUM repo
+        baseurl: https://pkgs.k8s.io/core:/stable:/v1.32/rpm/
+        enabled: yes
+        gpgcheck: yes
+        gpgkey: https://pkgs.k8s.io/core:/stable:/v1.32/rpm/repodata/repomd.xml.key
+      become: true
+
+    - name: Install kubectl | RedHat
+      yum:
+        name: kubectl
+        state: present
+      become: true
+
+    - name: Check if Minikube is already installed | RedHat
+      command: minikube version
+      register: minikube_check
+      ignore_errors: true
+      changed_when: false
+
+    - name: Download the latest Minikube RPM package | RedHat
+      get_url:
+        url: 'https://storage.googleapis.com/minikube/releases/latest/minikube-latest.x86_64.rpm'
+        dest: '/tmp/minikube-latest.x86_64.rpm'
+        mode: '0644'
+      when: minikube_check.rc != 0
+
+    - name: Install Minikube package | RedHat
+      yum:
+        name: '/tmp/minikube-latest.x86_64.rpm'
+        state: present
+      become: true
+      when: minikube_check.rc != 0
+
+    - name: Verify Minikube installation | RedHat
+      command: minikube version
+      register: minikube_version
+      changed_when: false
+
+    - name: Check if k9s is already installed | RedHat
+      command: k9s version
+      register: k9s_check
+      ignore_errors: true
+      changed_when: false
+
+    - name: Download the latest k9s RPM package | RedHat
+      get_url:
+        url: 'https://github.com/derailed/k9s/releases/download/v0.32.7/k9s_Linux_x86_64.rpm'
+        dest: '/tmp/k9s_Linux_x86_64.rpm'
+        mode: '0644'
+      when: k9s_check.rc != 0
+
+    - name: Install k9s package | RedHat
+      yum:
+        name: '/tmp/k9s_Linux_x86_64.rpm'
+        state: present
+      become: true
+      when: k9s_check.rc != 0
+
+    - name: Verify k9s installation | RedHat
+      command: k9s version
+      register: k9s_version
+      changed_when: false
