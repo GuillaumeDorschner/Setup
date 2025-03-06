@@ -19,7 +19,13 @@
         executable: /bin/zsh
       changed_when: false
 
-# Ubuntu
+    - name: Ensure PlantUML JAR directory exists | macOS
+      file:
+        path: /usr/local/bin/
+        state: directory
+        mode: '0755'
+
+# Debian
 - name: Install Java & PlantUML | Ubuntu
   when: ansible_os_family == "Debian"
   block:
@@ -27,27 +33,79 @@
       apt:
         name:
           - default-jre
-          - plantuml
+          - graphviz
         state: present
         update_cache: yes
       become: true
 
+    - name: Ensure PlantUML directory exists | Ubuntu
+      file:
+        path: /opt/plantuml/
+        state: directory
+        mode: '0755'
+      become: true
+
+    - name: Download PlantUML JAR | Ubuntu
+      get_url:
+        url: 'https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar'
+        dest: '/opt/plantuml/plantuml.jar'
+        mode: '0755'
+      become: true
+
 # RedHat
-- name: Install Java & plantuml | RedHat
+- name: Install Java & PlantUML | RedHat
   when: ansible_os_family == "RedHat"
   block:
     - name: Install Java and dependencies | RedHat
       yum:
         name:
           - java-11-openjdk
-          - plantuml
+          - graphviz
         state: present
       become: true
 
-# All
-- name: Install PlantUML Extension in VS Code
+    - name: Ensure PlantUML directory exists | RedHat
+      file:
+        path: /opt/plantuml/
+        state: directory
+        mode: '0755'
+      become: true
+
+    - name: Download PlantUML JAR | RedHat
+      get_url:
+        url: 'https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar'
+        dest: '/opt/plantuml/plantuml.jar'
+        mode: '0755'
+      become: true
+
+- name: Ensure VS Code PlantUML extension is installed
   command: code --install-extension jebbs.plantuml
   args:
     executable: /bin/zsh
   register: vscode_extensions
   changed_when: "'already installed' not in vscode_extensions.stdout"
+
+- name: Set correct PlantUML path in VS Code settings.json
+  block:
+    - name: Read current settings.json | macOS
+      slurp:
+        src: '{{ ansible_env.HOME }}/Library/Application Support/Code/User/settings.json'
+      register: settings_json
+      when: ansible_os_family == "Darwin"
+
+    - name: Read current settings.json | Debian, RedHat
+      slurp:
+        src: '{{ ansible_env.HOME }}/.config/Code/User/settings.json'
+      register: settings_json
+      when: ansible_os_family in ["Debian", "RedHat"]
+
+    - name: Update PlantUML paths in settings.json
+      copy:
+        dest: "{{ ansible_env.HOME }}/{{ 'Library/Application Support/Code/User/settings.json' if ansible_os_family == 'Darwin' else '.config/Code/User/settings.json' }}"
+        content: >-
+          {{ (settings_json.content | b64decode | from_json) |
+             combine({
+               'markdown-preview-enhanced.plantumlJarPath': '/usr/local/bin/plantuml.jar' if ansible_os_family == "Darwin" else '/opt/plantuml/plantuml.jar',
+               'plantuml.jar': '/usr/local/bin/plantuml.jar' if ansible_os_family == "Darwin" else '/opt/plantuml/plantuml.jar'
+             }) | to_nice_json }}
+      when: settings_json.content is defined
