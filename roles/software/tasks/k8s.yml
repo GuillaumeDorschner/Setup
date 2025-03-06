@@ -68,5 +68,30 @@
         name: kubectl
         state: present
       become: true
+
+    - name: Check if Minikube is already installed
+      command: minikube version
+      register: minikube_check
+      ignore_errors: true
+      changed_when: false
+
+    - name: Download the latest Minikube Debian package
+      get_url:
+        url: 'https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb'
+        dest: '/tmp/minikube_latest_amd64.deb'
+        mode: '0644'
+      when: minikube_check.rc != 0
+
+    - name: Install Minikube package
+      apt:
+        deb: '/tmp/minikube_latest_amd64.deb'
+        state: present
+      become: true
+      when: minikube_check.rc != 0
+
+    - name: Verify Minikube installation
+      command: minikube version
+      register: minikube_version
+      changed_when: false
 # RedHat
 
