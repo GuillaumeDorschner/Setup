@@ -1,5 +1,7 @@
 # MacOS
-- block:
+- name: Install Kind | macOS
+  when: ansible_os_family == 'Darwin'
+  block:
     - name: Install Kind | macOS
       homebrew:
         name: kind
@@ -12,7 +14,6 @@
       homebrew:
         name: k9s
         state: present
-  when: ansible_os_family == 'Darwin'
 # - block: # TODO: Add installation steps for Ubuntu, RedHat
 #     - name: Install Kind
 #       shell: |
