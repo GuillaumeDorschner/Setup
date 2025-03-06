@@ -100,6 +100,7 @@
       eval "$(/usr/bin/env brew shellenv)"
       export PATH="$(brew --prefix)/sbin:$PATH"
       source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+      echo 'export HOMEBREW_NO_ENV_HINTS=1' >> ~/.zshrc
     create: yes
     state: present
   when: ansible_os_family == "Darwin"
