@@ -1,0 +1,6 @@
+- name: Install GNOME Sushi (if available) | Debian, RedHat
+  yum:
+    name: gnome-sushi
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
