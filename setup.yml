@@ -12,6 +12,6 @@
     type_of_system: 'desktop' # desktop or server
 
   roles:
-    # - role: system
-    # - role: common
+    - role: system
+    - role: common
     - role: software
