@@ -85,27 +85,21 @@
   register: vscode_extensions
   changed_when: "'already installed' not in vscode_extensions.stdout"
 
-- name: Set correct PlantUML path in VS Code settings.json
+- name: Ensure PlantUML is in the PATH | Debian, RedHat
+  when: ansible_os_family in ['Debian', 'RedHat']
   block:
-    - name: Read current settings.json | macOS
-      slurp:
-        src: '{{ ansible_env.HOME }}/Library/Application Support/Code/User/settings.json'
-      register: settings_json
-      when: ansible_os_family == "Darwin"
-
-    - name: Read current settings.json | Debian, RedHat
-      slurp:
-        src: '{{ ansible_env.HOME }}/.config/Code/User/settings.json'
-      register: settings_json
+    - name: Update PlantUML paths in VS Code settings.json | Debian, RedHat
+      ansible.builtin.lineinfile:
+        path: '{{ ansible_env.HOME }}/.config/Code/User/settings.json'
+        regexp: '"markdown-preview-enhanced.plantumlJarPath":\s*".*/plantuml.jar"'
+        line: '  "markdown-preview-enhanced.plantumlJarPath": "/opt/plantuml/plantuml.jar",'
+        backrefs: yes
       when: ansible_os_family in ["Debian", "RedHat"]
 
-    - name: Update PlantUML paths in settings.json
-      copy:
-        dest: "{{ ansible_env.HOME }}/{{ 'Library/Application Support/Code/User/settings.json' if ansible_os_family == 'Darwin' else '.config/Code/User/settings.json' }}"
-        content: >-
-          {{ (settings_json.content | b64decode | from_json) |
-             combine({
-               'markdown-preview-enhanced.plantumlJarPath': '/usr/local/bin/plantuml.jar' if ansible_os_family == "Darwin" else '/opt/plantuml/plantuml.jar',
-               'plantuml.jar': '/usr/local/bin/plantuml.jar' if ansible_os_family == "Darwin" else '/opt/plantuml/plantuml.jar'
-             }) | to_nice_json }}
-      when: settings_json.content is defined
+    - name: Update PlantUML jar path in VS Code settings.json | Debian, RedHat
+      ansible.builtin.lineinfile:
+        path: '{{ ansible_env.HOME }}/.config/Code/User/settings.json'
+        regexp: '"plantuml.jar":\s*".*/plantuml.jar"'
+        line: '  "plantuml.jar": "/opt/plantuml/plantuml.jar",'
+        backrefs: yes
+      when: ansible_os_family in ["Debian", "RedHat"]
