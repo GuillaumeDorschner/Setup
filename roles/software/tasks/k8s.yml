@@ -93,5 +93,30 @@
       command: minikube version
       register: minikube_version
       changed_when: false
+
+    - name: Check if k9s is already installed
+      command: k9s version
+      register: k9s_check
+      ignore_errors: true
+      changed_when: false
+
+    - name: Download the latest k9s Debian package
+      get_url:
+        url: 'https://github.com/derailed/k9s/releases/download/v0.32.7/k9s_linux_amd64.deb'
+        dest: '/tmp/k9s_linux_amd64.deb'
+        mode: '0644'
+      when: k9s_check.rc != 0
+
+    - name: Install k9s package
+      apt:
+        deb: '/tmp/k9s_linux_amd64.deb'
+        state: present
+      become: true
+      when: k9s_check.rc != 0
+
+    - name: Verify k9s installation
+      command: k9s version
+      register: k9s_version
+      changed_when: false
 # RedHat
 
