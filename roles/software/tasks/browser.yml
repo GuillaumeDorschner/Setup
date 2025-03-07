@@ -5,28 +5,33 @@
     state: present
   when: ansible_facts['os_family'] == 'Darwin'
 
-# ubuntu
+# Debian
 - block:
-    - name: Ensure apt-transport-https is installed | Debian
-      apt:
-        name: apt-transport-https
-        state: present
+    - name: Ensure the /etc/apt/keyrings directory exists | Debian
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
       become: true
 
-    - name: Add Brave APT repository key | Debian
-      apt_key:
+    - name: Download Brave APT repository key | Debian
+      get_url:
         url: https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-        state: present
+        dest: /etc/apt/keyrings/keyrings/brave-browser-archive-keyring.gpg
+        mode: '0644'
+      become: true
 
     - name: Add Brave APT repository | Debian
       apt_repository:
-        repo: deb [arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main
+        repo: 'deb [signed-by=/etc/apt/keyrings/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main'
         state: present
+      become: true
 
     - name: Install Brave Browser | Debian
       apt:
         name: brave-browser
         state: present
+      become: true
   when: ansible_facts['os_family'] == 'Debian' and type_of_system == 'desktop'
 
 # RedHat
