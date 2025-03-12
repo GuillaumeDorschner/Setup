@@ -15,6 +15,12 @@
         src: '{{ role_path }}/files/vsc/vscode-settings.json'
         dest: '{{ ansible_env.HOME }}/Library/Application Support/Code/User/settings.json'
         mode: '0644'
+
+    - name: Copy VSCode keybindings | macOS
+      copy:
+        src: '{{ role_path }}/files/vsc/keybindings.json'
+        dest: '{{ ansible_env.HOME }}/Library/Application Support/Code/User/keybindings.json'
+        mode: '0644'
   when: ansible_os_family == "Darwin"
 
 - block:
@@ -38,26 +44,32 @@
       become: true
       when: not microsoft_gpg_key.stat.exists
 
-    - name: Add the VSCode repository
+    - name: Add the VSCode repository | Debian
       apt_repository:
         repo: 'deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main'
         state: present
         filename: vscode
       become: true
 
-    - name: Install or update VSCode
+    - name: Install or update VSCode | Debian
       apt:
         name: code
         state: latest
         update_cache: yes
       become: true
 
-    - name: Copy VSCode settings
+    - name: Copy VSCode settings | Debian
       copy:
         src: '{{ role_path }}/files/vsc/vscode-settings.json'
-        dest: '{{ ansible_env.HOME }}/.config/Code/User/settings.json'
+        dest: '{{ ansible_env.HOME }}/.config/Code/User/settings.json' # TODO: find the correct path
         mode: '0644'
       become: false
+
+    - name: Copy VSCode keybindings | Debian
+      copy:
+        src: '{{ role_path }}/files/vsc/keybindings.json'
+        dest: '{{ ansible_env.HOME }}/.config/Code/User/keybindings.json'
+        mode: '0644'
   when: ansible_os_family == "Debian"
 
 - block:
@@ -87,6 +99,12 @@
       copy:
         src: '{{ role_path }}/files/vsc/vscode-settings.json'
         dest: '{{ ansible_env.HOME }}/.config/Code/User/settings.json'
+        mode: '0644'
+
+    - name: Copy VSCode keybindings | RedHat
+      copy:
+        src: '{{ role_path }}/files/vsc/keybindings.json'
+        dest: '{{ ansible_env.HOME }}/.config/Code/User/keybindings.json' # TODO: find the correct path
         mode: '0644'
   when: ansible_os_family == "RedHat"
 
