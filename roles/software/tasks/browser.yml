@@ -77,3 +77,5 @@
         executable: /bin/zsh
       when: "'brave' not in current_browser.stdout | lower"
   when: ansible_facts['os_family'] in ['Debian', 'RedHat'] and type_of_system == 'desktop'
+
+  # TODO: add bookmark bar and other settings

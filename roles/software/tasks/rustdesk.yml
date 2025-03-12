@@ -1,30 +1,49 @@
+- name: Determine system architecture
+  set_fact:
+    rustdesk_arch: >-
+      {% if ansible_architecture in ['x86_64', 'amd64'] %}
+        x86_64
+      {% elif ansible_architecture in ['aarch64', 'arm64'] %}
+        aarch64
+      {% elif ansible_architecture.startswith('armv7') %}
+        armv7
+      {% else %}
+        x86_64
+      {% endif %}
+
 # macOS
 - name: Install RustDesk | macOS
   when: ansible_os_family == 'Darwin'
-  block:
-    - name: Install RustDesk
-      homebrew:
-        name: rustdesk
-        state: present
+  homebrew:
+    name: rustdesk
+    state: present
 
-# TODO: Debian
+# Debian
 - name: Install RustDesk | Debian
   when: ansible_os_family == 'Debian'
   block:
-    - name: Install RustDesk
+    - name: Download RustDesk .deb package
+      get_url:
+        url: 'https://github.com/rustdesk/rustdesk/releases/download/{{ rustdesk_version }}/rustdesk-{{ rustdesk_version }}-{{ rustdesk_arch }}.deb'
+        dest: '/tmp/rustdesk.deb'
+
+    - name: Install downloaded RustDesk package
       become: true
       apt:
-        name: rustdesk
+        deb: '/tmp/rustdesk.deb'
         state: present
-        update_cache: yes
 
-# TODO: RedHat
+# RedHat
 - name: Install RustDesk | RedHat
   when: ansible_os_family == 'RedHat'
   block:
-    - name: Install RustDesk
+    - name: Download RustDesk RPM package
+      get_url:
+        url: 'https://github.com/rustdesk/rustdesk/releases/download/{{ rustdesk_version }}/rustdesk-{{ rustdesk_version }}-0.{{ rustdesk_arch }}.rpm'
+        dest: '/tmp/rustdesk.rpm'
+
+    - name: Install downloaded RustDesk RPM
       become: true
       yum:
-        name: rustdesk
+        name: '/tmp/rustdesk.rpm'
         state: present
-        update_cache: yes
