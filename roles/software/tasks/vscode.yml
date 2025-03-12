@@ -10,7 +10,7 @@
         executable: /bin/bash
       changed_when: false
 
-    - name: Copy VSCode Settings | macOS
+    - name: Copy VSCode Settings | macOS # TODO: make it idempotent
       copy:
         src: '{{ role_path }}/files/vsc/settings.json'
         dest: '{{ ansible_env.HOME }}/Library/Application Support/Code/User/settings.json'
