@@ -12,7 +12,7 @@
 
     - name: Copy VSCode Settings | macOS
       copy:
-        src: '{{ role_path }}/files/vsc/vscode-settings.json'
+        src: '{{ role_path }}/files/vsc/settings.json'
         dest: '{{ ansible_env.HOME }}/Library/Application Support/Code/User/settings.json'
         mode: '0644'
 
@@ -60,7 +60,7 @@
 
     - name: Copy VSCode settings | Debian
       copy:
-        src: '{{ role_path }}/files/vsc/vscode-settings.json'
+        src: '{{ role_path }}/files/vsc/settings.json'
         dest: '{{ ansible_env.HOME }}/.config/Code/User/settings.json' # TODO: find the correct path
         mode: '0644'
       become: false
@@ -97,7 +97,7 @@
 
     - name: Copy VSCode Settings | RedHat
       copy:
-        src: '{{ role_path }}/files/vsc/vscode-settings.json'
+        src: '{{ role_path }}/files/vsc/settings.json'
         dest: '{{ ansible_env.HOME }}/.config/Code/User/settings.json'
         mode: '0644'
 
