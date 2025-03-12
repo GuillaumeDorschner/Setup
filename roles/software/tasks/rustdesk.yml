@@ -1,0 +1,27 @@
+# macOS
+- name: Install RustDesk
+  homebrew:
+    name: rustdesk
+    state: present
+    update_homebrew: yes
+  when: ansible_os_family == 'Darwin'
+
+# TODO: Debian
+- name: Install RustDesk
+  when: ansible_os_family == 'Debian'
+  block:
+    - name: Install RustDesk
+      apt:
+        name: rustdesk
+        state: present
+        update_cache: yes
+
+# TODO: RedHat
+- name: Install RustDesk
+  when: ansible_os_family == 'RedHat'
+  block:
+    - name: Install RustDesk
+      yum:
+        name: rustdesk
+        state: present
+        update_cache: yes
