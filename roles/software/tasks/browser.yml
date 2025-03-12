@@ -16,20 +16,20 @@
 
     - name: Check if the Brave GPG key is already present | Debian
       stat:
-        path: /etc/apt/keyrings/keyrings/brave-browser-archive-keyring.gpg
+        path: /etc/apt/keyrings/brave-browser-archive-keyring.gpg
       register: brave_gpg_key
 
     - name: Download Brave APT repository key if not present | Debian
       get_url:
         url: https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-        dest: /etc/apt/keyrings/keyrings/brave-browser-archive-keyring.gpg
+        dest: /etc/apt/keyrings/brave-browser-archive-keyring.gpg
         mode: '0644'
       become: true
       when: not brave_gpg_key.stat.exists
 
     - name: Add Brave APT repository | Debian
       apt_repository:
-        repo: deb [arch=amd64, signed-by=/etc/apt/keyrings/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main
+        repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main
         state: present
         filename: brave-browser
       become: true
