@@ -1,5 +1,5 @@
 - name: Install GNOME Sushi (if available) | Debian, RedHat
-  yum:
+  package:
     name: gnome-sushi
     state: present
   become: true
