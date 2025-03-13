@@ -166,6 +166,7 @@
         - usernamehw.errorlens
         - vscodevim.vim
         - yzhang.markdown-all-in-one
+        - ahmadawais.emoji-log-vscode
       args:
         executable: /bin/zsh
       loop_control:
