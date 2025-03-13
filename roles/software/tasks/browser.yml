@@ -39,6 +39,22 @@
         name: brave-browser
         state: present
       become: true
+
+    - name: Set Bookmarks | Debian
+      when: (install_ssh_keys | default('no') | lower) in ['yes', 'y'] and ansible_os_family != "Windows"
+      block:
+        - name: Set Bookmarks | Debian
+          file:
+            path: '{{ ansible_env.HOME }}/.config/BraveSoftware/Brave-Browser/Default'
+            state: directory
+            mode: '0700'
+
+        - name: Copy Encrypted Bookmarks | Debian
+          copy:
+            src: '{{ role_path }}/files/brave/Bookmarks.json'
+            dest: '{{ ansible_env.HOME }}/.config/BraveSoftware/Brave-Browser/Default/Bookmarks'
+            mode: '0600'
+          changed_when: false
   when: ansible_facts['os_family'] == 'Debian' and type_of_system == 'desktop'
 
 # RedHat
