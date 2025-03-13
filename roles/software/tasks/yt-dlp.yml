@@ -4,7 +4,7 @@
     name: yt-dlp
     state: present
 
-- name: Install yt-dlp | Debian # TODO: Add support for other Debian-based distros
+- name: Install yt-dlp | Debian
   when: ansible_os_family == 'Debian'
   block:
     - name: Add yt-dlp repository | Debian
@@ -12,9 +12,10 @@
         validate_certs: no
         repo: 'ppa:tomtomtom/yt-dlp'
         state: present
-        update_cache: yes
+      become: true
 
     - name: Install yt-dlp | Debian
       apt:
         name: yt-dlp
         state: present
+      become: true
