@@ -1,0 +1,20 @@
+- name: Install yt-dlp | macOS
+  when: ansible_os_family == 'Darwin'
+  homebrew:
+    name: yt-dlp
+    state: present
+
+- name: Install yt-dlp | Debian
+  when: ansible_os_family == 'Debian'
+  block:
+    - name: Add yt-dlp repository | Debian
+      apt_repository:
+        validate_certs: no
+        repo: 'ppa:tomtomtom/yt-dlp'
+        state: present
+        update_cache: yes
+
+    - name: Install yt-dlp | Debian
+      apt:
+        name: yt-dlp
+        state: present
