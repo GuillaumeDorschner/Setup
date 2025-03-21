@@ -1,9 +1,4 @@
 {
-  // --- For VSC Remote ---
-  // un comment for offline servers
-  "update.mode": "none",
-  "extensions.autoCheckUpdates": false,
-  "extensions.autoUpdate": false,
   // --- Language ---
   // all
   "editor.formatOnSave": true,
@@ -97,6 +92,8 @@
   },
 
   // --- General VSC ---
+  "extensions.autoCheckUpdates": true,
+  "extensions.autoUpdate": true,
   "editor.snippetSuggestions": "top",
   "editor.inlineSuggest.enabled": true,
   "editor.cursorSmoothCaretAnimation": "on",
