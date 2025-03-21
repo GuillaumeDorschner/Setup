@@ -17,3 +17,10 @@
     scope: global
     value: 'guillaume.dorschner@icloud.com'
   when: git_user_email is defined
+
+- name: config credential helper
+  git_config:
+    name: credential.helper
+    scope: global
+    value: 'osxkeychain'
+  when: ansible_os_family == 'Darwin'
