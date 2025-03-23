@@ -42,7 +42,7 @@
   "latex-workshop.view.pdf.viewer": "tab",
   "latex-workshop.latex.autoBuild.run": "onSave",
   "latex-workshop.synctex.afterBuild.enabled": true,
-  "latex-workshop.latex.autoClean.run": "onBuilt",
+  "latex-workshop.latex.autoClean.run": "never",
   "latex-workshop.view.outline.sync.viewer": true,
 
   "latex-workshop.latex.tools": [
