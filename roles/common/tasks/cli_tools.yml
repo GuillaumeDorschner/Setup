@@ -12,6 +12,7 @@
       - htop
       - nmap
       - gpg
+      - fzf
     state: present
   become: "{{ ansible_os_family != 'Darwin' }}"
 
