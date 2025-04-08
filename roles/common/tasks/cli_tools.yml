@@ -12,8 +12,19 @@
       - htop
       - nmap
       - gpg
+      - fzf
     state: present
   become: "{{ ansible_os_family != 'Darwin' }}"
+
+# macOS
+- block:
+    - name: Only | macOS
+      homebrew:
+        name:
+          - act
+        state: present
+      become: false
+  when: ansible_os_family == 'Darwin'
 
 # Ubuntu
 - block:
