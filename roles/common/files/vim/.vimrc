@@ -1,5 +1,6 @@
 syntax on
 set number
+set incsearch
 
 " Move lines up and down in normal mode
 nnoremap <C-j> :m .+1<CR>==
