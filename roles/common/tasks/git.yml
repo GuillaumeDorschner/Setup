@@ -18,6 +18,12 @@
     value: 'guillaume.dorschner@icloud.com'
   when: git_user_email is defined
 
+- name: Rewrite GitHub HTTPS URLs to SSH globally
+  git_config:
+    name: 'url.git@github.com:.insteadOf'
+    scope: global
+    value: 'https://github.com/'
+
 - name: config credential helper
   git_config:
     name: credential.helper
