@@ -120,7 +120,6 @@
         - charliermarsh.ruff
         - dart-code.dart-code
         - dart-code.flutter
-        # - equinusocio.vsc-material-theme-icons
         - esbenp.prettier-vscode
         - ethansk.restore-terminals
         - fivethree.vscode-svelte-snippets
@@ -165,7 +164,6 @@
         - usernamehw.errorlens
         - vscodevim.vim
         - yzhang.markdown-all-in-one
-        - ahmadawais.emoji-log-vscode
         - dnicolson.binary-plist
       args:
         executable: /bin/zsh
