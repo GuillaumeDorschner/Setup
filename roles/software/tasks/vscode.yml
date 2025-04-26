@@ -166,6 +166,7 @@
         - vscodevim.vim
         - yzhang.markdown-all-in-one
         - ahmadawais.emoji-log-vscode
+        - dnicolson.binary-plist
       args:
         executable: /bin/zsh
       loop_control:
