@@ -5,6 +5,7 @@
       - login to dashlane
       - office
       - Magnet (in the App Store)
+      - finder --> Setting > General > Check : Sync Desktop and Documents with iCloud Drive
       - terminal --> `Setting > Profile > Shell` When the shell exit to close if the shell exit cleanly
       - Go to settings `Keyboard > Keyboard Shortcuts... > Services > Files and Folders` and check the following
         https://github.com/GuillaumeDorschner/Setup-Mac/assets/44686652/b4b46d93-ae25-4372-a098-9a06ec860c7d
