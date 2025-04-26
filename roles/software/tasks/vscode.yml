@@ -120,6 +120,7 @@
         - charliermarsh.ruff
         - dart-code.dart-code
         - dart-code.flutter
+        - pkief.material-icon-theme
         - esbenp.prettier-vscode
         - ethansk.restore-terminals
         - fivethree.vscode-svelte-snippets
