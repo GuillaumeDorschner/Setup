@@ -4,3 +4,9 @@
     name: mos
     state: present
   when: ansible_os_family == 'Darwin'
+
+- name: remove warring flag
+  shell:
+    cmd: |
+      sudo xattr -r -d com.apple.quarantine /Applications/Mos.app
+  when: ansible_os_family == 'Darwin'
