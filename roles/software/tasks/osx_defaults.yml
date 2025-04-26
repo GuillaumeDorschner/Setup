@@ -1,5 +1,6 @@
 # macOS
-- block:
+- name: Apply user-level Finder/Terminal/screensaver defaults
+  block:
     - name: Show hidden files in Finder on macOS
       community.general.osx_defaults:
         domain: com.apple.finder
@@ -48,12 +49,12 @@
         finder_needs_restart: true
       when: _hide_drives.changed
 
-    - name: Disable “Prompt on Close” in Terminal
+    - name: Keep Terminal window open after shell exits
       community.general.osx_defaults:
         domain: com.apple.Terminal
-        key: PromptOnClose
-        type: bool
-        value: false
+        key: ShellExitAction
+        type: int
+        value: 1
 
     - name: Keep Terminal window open after shell exits
       community.general.osx_defaults:
@@ -70,12 +71,19 @@
         type: int
         value: 0
 
-    - name: Set display sleep to 1 minute on battery
-      command: pmset -b displaysleep 1
-    - name: Set display sleep to 2 minutes on AC power
-      command: pmset -c displaysleep 2
-
     - name: Restart Finder to apply changes
       command: killall Finder
       changed_when: false
   when: ansible_os_family == 'Darwin'
+
+- name: Apply system-level settings
+  block:
+    - name: Set display sleep to 1 minute on battery
+      command: pmset -b displaysleep 1
+
+    - name: Set display sleep to 2 minutes on AC power
+      command: pmset -c displaysleep 2
+
+  when: ansible_os_family == 'Darwin'
+  become: true
+  become_user: root
