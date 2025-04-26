@@ -120,7 +120,6 @@
         - charliermarsh.ruff
         - dart-code.dart-code
         - dart-code.flutter
-        # - equinusocio.vsc-material-theme
         # - equinusocio.vsc-material-theme-icons
         - esbenp.prettier-vscode
         - ethansk.restore-terminals

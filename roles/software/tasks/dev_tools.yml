@@ -18,6 +18,12 @@
           [ -s "$(brew --prefix nvm)/etc/bash_completion.d/nvm" ] && \. "$(brew --prefix nvm)/etc/bash_completion.d/nvm"
         create: yes
         state: present
+
+    - name: Use the last installed version of NVM | macOS
+      shell: |
+        source {{ ansible_env.HOME }}/.zshrc && nvm install --lts && nvm use --lts
+      args:
+        executable: /bin/zsh
   when: ansible_os_family == "Darwin"
 
 # Debian
@@ -64,7 +70,10 @@
   when: ansible_os_family == 'RedHat'
 
 - name: Verify Node.js and npm installation
-  command: node --version
+  shell: |
+    source {{ ansible_env.HOME }}/.zshrc && node --version
+  args:
+    executable: /bin/zsh
   register: node_version
   changed_when: false
 
