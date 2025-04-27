@@ -121,6 +121,27 @@
         type: int
         value: 36
 
+    - name: typing delay
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: InitialKeyRepeat
+        type: int
+        value: 15
+
+    - name: typing speed
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: KeyRepeat
+        type: int
+        value: 2
+
+    - name: Press hold to repeat
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: ApplePressAndHoldEnabled
+        type: bool
+        value: false
+
 - name: Apply system-level settings
   when: ansible_os_family == 'Darwin'
   become: true
