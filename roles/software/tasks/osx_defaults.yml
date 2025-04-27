@@ -1,89 +1,139 @@
 # macOS
-- name: Apply user-level Finder/Terminal/screensaver defaults
-  block:
-    - name: Show hidden files in Finder on macOS
-      community.general.osx_defaults:
-        domain: com.apple.finder
-        key: AppleShowAllFiles
-        type: bool
-        value: true
+# - name: Apply user-level defaults
+#   when: ansible_os_family == 'Darwin'
+#   block:
+# - name: Require password immediately after screensaver starts
+#   community.general.osx_defaults:
+#     domain: com.apple.screensaver
+#     key: askForPassword
+#     type: int
+#     value: 1
 
-    - name: Require password immediately after screensaver starts
-      community.general.osx_defaults:
-        domain: com.apple.screensaver
-        key: askForPassword
-        type: int
-        value: 1
+# - name: Set screensaver password delay to zero
+#   community.general.osx_defaults:
+#     domain: com.apple.screensaver
+#     key: askForPasswordDelay
+#     type: int
+#     value: 0
 
-    - name: Set screensaver password delay to zero
-      community.general.osx_defaults:
-        domain: com.apple.screensaver
-        key: askForPasswordDelay
-        type: int
-        value: 0
+# - name: Use List view by default in Finder
+#   community.general.osx_defaults:
+#     domain: com.apple.finder
+#     key: FXPreferredViewStyle
+#     type: string
+#     value: Nlsv
 
-    - name: Use List view by default in Finder
-      community.general.osx_defaults:
-        domain: com.apple.finder
-        key: FXPreferredViewStyle
-        type: string
-        value: Nlsv
-      register: _view_style
+# - name: Show Path Bar in Finder
+#   community.general.osx_defaults:
+#     domain: com.apple.finder
+#     key: ShowPathBar
+#     type: bool
+#     value: true
 
-    - name: Show Path Bar in Finder
-      community.general.osx_defaults:
-        domain: com.apple.finder
-        key: ShowPathBar
-        type: bool
-        value: true
-      register: _path_bar
+# - name: Don't show hard drives on desktop
+#   community.general.osx_defaults:
+#     domain: com.apple.finder
+#     key: ShowHardDrivesOnDesktop
+#     type: bool
+#     value: false
 
-    - name: Don't show hard drives on desktop
-      community.general.osx_defaults:
-        domain: com.apple.finder
-        key: ShowHardDrivesOnDesktop
-        type: bool
-        value: false
-      register: _hide_drives
-    - set_fact:
-        finder_needs_restart: true
-      when: _hide_drives.changed
+# - name: Keep Terminal window open after shell exits
+#   community.general.osx_defaults:
+#     domain: com.apple.Terminal
+#     key: ShellExitAction
+#     type: int
+#     value: 1
 
-    - name: Keep Terminal window open after shell exits
-      community.general.osx_defaults:
-        domain: com.apple.Terminal
-        key: ShellExitAction
-        type: int
-        value: 1
+# - name: Keep Terminal window open after shell exits
+#   community.general.osx_defaults:
+#     domain: com.apple.Terminal
+#     key: ShellExitAction
+#     type: int
+#     value: 1
 
-    - name: Keep Terminal window open after shell exits
-      community.general.osx_defaults:
-        domain: com.apple.Terminal
-        key: ShellExitAction
-        type: int
-        value: 1
+# - name: Make screensaver never start on this Mac
+#   community.general.osx_defaults:
+#     domain: com.apple.screensaver
+#     host: "{{ ansible_facts['nodename'] }}"
+#     key: idleTime
+#     type: int
+#     value: 0
+- name: Show all filename extensions
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: AppleShowAllFiles
+    type: bool
+    value: true
 
-    - name: Make screensaver never start on this Mac
-      community.general.osx_defaults:
-        domain: com.apple.screensaver
-        host: "{{ ansible_facts['nodename'] }}"
-        key: idleTime
-        type: int
-        value: 0
+- name: Show Path Bar in Finder
+  community.general.osx_defaults:
+    domain: com.apple.finder
+    key: ShowPathbar
+    type: bool
+    value: true
 
-    - name: Restart Finder to apply changes
-      command: killall Finder
-      changed_when: false
-  when: ansible_os_family == 'Darwin'
+- name: Finder set to List view
+  community.general.osx_defaults:
+    domain: com.apple.finder
+    key: FXPreferredViewStyle
+    type: string
+    value: Nlsv
 
-- name: Apply system-level settings
-  block:
-    - name: Set display sleep to 1 minute on battery
-      command: pmset -b displaysleep 1
+- name: Focus Terminal
+  community.general.osx_defaults:
+    domain: com.apple.Terminal
+    key: FocusFollowsMouse
+    type: bool
+    value: true
 
-    - name: Set display sleep to 2 minutes on AC power
-      command: pmset -c displaysleep 2
+- name: Empty Trash after 30 days
+  community.general.osx_defaults:
+    domain: com.apple.finder
+    key: FXRemoveOldTrashItems
+    type: bool
+    value: true
 
-  when: ansible_os_family == 'Darwin'
-  become: true
-  become_user: root
+- name: remove warring about emptying trash
+  community.general.osx_defaults:
+    domain: com.apple.finder
+    key: WarnOnEmptyTrash
+    type: bool
+    value: false
+
+- name: remove warring about rename files
+  community.general.osx_defaults:
+    domain: com.apple.finder
+    key: FXEnableExtensionChangeWarning
+    type: bool
+    value: false
+
+- name: Safari show full URL
+  community.general.osx_defaults:
+    domain: com.apple.Safari
+    key: ShowFullURLInSmartSearchField
+    type: bool
+    value: true
+
+- name: Dock on the left
+  community.general.osx_defaults:
+    domain: com.apple.dock
+    key: orientation
+    type: string
+    value: left
+
+- name: Dock tile size
+  community.general.osx_defaults:
+    domain: com.apple.dock
+    key: tilesize
+    type: int
+    value: 36
+# - name: Apply system-level settings
+#   when: ansible_os_family == 'Darwin'
+#   become: true
+#   become_user: root
+#   block:
+#     - name: Set display sleep to 1 minute on battery
+#       command: pmset -b displaysleep 1
+
+#     - name: Set display sleep to 2 minutes on AC power
+#       command: pmset -c displaysleep 2
