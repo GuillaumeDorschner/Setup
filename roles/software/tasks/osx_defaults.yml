@@ -119,7 +119,7 @@
         domain: com.apple.dock
         key: tilesize
         type: int
-        value: 36
+        value: 48
 
     - name: typing delay
       community.general.osx_defaults:
