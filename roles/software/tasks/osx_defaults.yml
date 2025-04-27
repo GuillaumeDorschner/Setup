@@ -107,13 +107,6 @@
         type: bool
         value: false
 
-    - name: Safari show full URL
-      community.general.osx_defaults:
-        domain: com.apple.Safari
-        key: ShowFullURLInSmartSearchField
-        type: bool
-        value: true
-
     - name: Dock on the left
       community.general.osx_defaults:
         domain: com.apple.dock
