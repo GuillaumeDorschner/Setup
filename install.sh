@@ -8,6 +8,13 @@ SETUP_DIR="$HOME/Setup"
 
 OS="$(uname -s)"
 
+if [ "$OS" = "Linux" ] || [ "$OS" = "Darwin" ]; then
+    echo "🔍 Detecting OS: $OS"
+else
+    echo "Unsupported OS: $OS"
+    exit 1
+fi
+
 install_dependencies() {
     echo "🔍 Checking dependencies..."
 
@@ -31,12 +38,17 @@ install_dependencies() {
         fi
     fi
 
+    if [ "$OS" = "Darwin" ]; then
+        if ! command -v brew >/dev/null 2>&1; then
+            echo "📥 Installing Homebrew..."
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        fi
+    fi
+
     if ! command -v ansible >/dev/null 2>&1; then
         echo "📥 Installing Ansible..."
         if [ "$OS" = "Darwin" ]; then
-            pip3 install ansible
-            USER_BASE_BIN="$(python3 -m site --user-base)/bin"
-            export PATH="$USER_BASE_BIN:$PATH”
+            brew install ansible
         elif [ -f "/etc/debian_version" ]; then
             sudo apt update && sudo apt install -y ansible
         elif [ -f "/etc/redhat-release" ]; then
