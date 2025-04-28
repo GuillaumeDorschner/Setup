@@ -35,6 +35,8 @@ install_dependencies() {
         echo "📥 Installing Ansible..."
         if [ "$OS" = "Darwin" ]; then
             pip3 install ansible
+            USER_BASE_BIN="$(python3 -m site --user-base)/bin"
+            export PATH="$USER_BASE_BIN:$PATH”
         elif [ -f "/etc/debian_version" ]; then
             sudo apt update && sudo apt install -y ansible
         elif [ -f "/etc/redhat-release" ]; then
