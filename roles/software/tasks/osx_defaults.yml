@@ -1,154 +1,159 @@
 # macOS
-- name: Apply user-level defaults
-  when: ansible_os_family == 'Darwin'
+- name: macOS settings
+  when: ansible_os_family == "Darwin"
   block:
-    - name: Require password immediately after screensaver starts
-      community.general.osx_defaults:
-        domain: com.apple.screensaver
-        key: askForPassword
-        type: int
-        value: 1
+    - name: Apply user-level defaults
+      block:
+        - name: Require password immediately after screensaver starts
+          community.general.osx_defaults:
+            domain: com.apple.screensaver
+            key: askForPassword
+            type: int
+            value: 1
 
-    - name: Set screensaver password delay to zero
-      community.general.osx_defaults:
-        domain: com.apple.screensaver
-        key: askForPasswordDelay
-        type: int
-        value: 0
+        - name: Set screensaver password delay to zero
+          community.general.osx_defaults:
+            domain: com.apple.screensaver
+            key: askForPasswordDelay
+            type: int
+            value: 0
 
-    - name: Use List view by default in Finder
-      community.general.osx_defaults:
-        domain: com.apple.finder
-        key: FXPreferredViewStyle
-        type: string
-        value: Nlsv
+        - name: Use List view by default in Finder
+          community.general.osx_defaults:
+            domain: com.apple.finder
+            key: FXPreferredViewStyle
+            type: string
+            value: Nlsv
 
-    - name: Show Path Bar in Finder
-      community.general.osx_defaults:
-        domain: com.apple.finder
-        key: ShowPathBar
-        type: bool
-        value: true
+        - name: Show Path Bar in Finder
+          community.general.osx_defaults:
+            domain: com.apple.finder
+            key: ShowPathBar
+            type: bool
+            value: true
 
-    - name: Don't show hard drives on desktop
-      community.general.osx_defaults:
-        domain: com.apple.finder
-        key: ShowHardDrivesOnDesktop
-        type: bool
-        value: false
+        - name: Don't show hard drives on desktop
+          community.general.osx_defaults:
+            domain: com.apple.finder
+            key: ShowHardDrivesOnDesktop
+            type: bool
+            value: false
 
-    - name: Keep Terminal window open after shell exits
-      community.general.osx_defaults:
-        domain: com.apple.Terminal
-        key: ShellExitAction
-        type: int
-        value: 1
+        - name: Keep Terminal window open after shell exits
+          community.general.osx_defaults:
+            domain: com.apple.Terminal
+            key: ShellExitAction
+            type: int
+            value: 1
 
-    - name: Keep Terminal window open after shell exits
-      community.general.osx_defaults:
-        domain: com.apple.Terminal
-        key: ShellExitAction
-        type: int
-        value: 1
+        - name: Keep Terminal window open after shell exits
+          community.general.osx_defaults:
+            domain: com.apple.Terminal
+            key: ShellExitAction
+            type: int
+            value: 1
 
-    - name: Make screensaver never start on this Mac
-      community.general.osx_defaults:
-        domain: com.apple.screensaver
-        host: "{{ ansible_facts['nodename'] }}"
-        key: idleTime
-        type: int
-        value: 0
-    - name: Show all filename extensions
-      community.general.osx_defaults:
-        domain: NSGlobalDomain
-        key: AppleShowAllFiles
-        type: bool
-        value: true
+        - name: Make screensaver never start on this Mac
+          community.general.osx_defaults:
+            domain: com.apple.screensaver
+            host: "{{ ansible_facts['nodename'] }}"
+            key: idleTime
+            type: int
+            value: 0
+        - name: Show all filename extensions
+          community.general.osx_defaults:
+            domain: NSGlobalDomain
+            key: AppleShowAllFiles
+            type: bool
+            value: true
 
-    - name: Show Path Bar in Finder
-      community.general.osx_defaults:
-        domain: com.apple.finder
-        key: ShowPathbar
-        type: bool
-        value: true
+        - name: Show Path Bar in Finder
+          community.general.osx_defaults:
+            domain: com.apple.finder
+            key: ShowPathbar
+            type: bool
+            value: true
 
-    - name: Finder set to List view
-      community.general.osx_defaults:
-        domain: com.apple.finder
-        key: FXPreferredViewStyle
-        type: string
-        value: Nlsv
+        - name: Finder set to List view
+          community.general.osx_defaults:
+            domain: com.apple.finder
+            key: FXPreferredViewStyle
+            type: string
+            value: Nlsv
 
-    - name: Focus Terminal
-      community.general.osx_defaults:
-        domain: com.apple.Terminal
-        key: FocusFollowsMouse
-        type: bool
-        value: true
+        - name: Focus Terminal
+          community.general.osx_defaults:
+            domain: com.apple.Terminal
+            key: FocusFollowsMouse
+            type: bool
+            value: true
 
-    - name: Empty Trash after 30 days
-      community.general.osx_defaults:
-        domain: com.apple.finder
-        key: FXRemoveOldTrashItems
-        type: bool
-        value: true
+        - name: Empty Trash after 30 days
+          community.general.osx_defaults:
+            domain: com.apple.finder
+            key: FXRemoveOldTrashItems
+            type: bool
+            value: true
 
-    - name: remove warring about emptying trash
-      community.general.osx_defaults:
-        domain: com.apple.finder
-        key: WarnOnEmptyTrash
-        type: bool
-        value: false
+        - name: remove warring about emptying trash
+          community.general.osx_defaults:
+            domain: com.apple.finder
+            key: WarnOnEmptyTrash
+            type: bool
+            value: false
 
-    - name: remove warring about rename files
-      community.general.osx_defaults:
-        domain: com.apple.finder
-        key: FXEnableExtensionChangeWarning
-        type: bool
-        value: false
+        - name: remove warring about rename files
+          community.general.osx_defaults:
+            domain: com.apple.finder
+            key: FXEnableExtensionChangeWarning
+            type: bool
+            value: false
 
-    - name: Dock on the left
-      community.general.osx_defaults:
-        domain: com.apple.dock
-        key: orientation
-        type: string
-        value: left
+        - name: Dock on the left
+          community.general.osx_defaults:
+            domain: com.apple.dock
+            key: orientation
+            type: string
+            value: left
 
-    - name: Dock tile size
-      community.general.osx_defaults:
-        domain: com.apple.dock
-        key: tilesize
-        type: int
-        value: 48
+        - name: Dock tile size
+          community.general.osx_defaults:
+            domain: com.apple.dock
+            key: tilesize
+            type: int
+            value: 48
 
-    - name: typing delay
-      community.general.osx_defaults:
-        domain: NSGlobalDomain
-        key: InitialKeyRepeat
-        type: int
-        value: 15
+        - name: typing delay
+          community.general.osx_defaults:
+            domain: NSGlobalDomain
+            key: InitialKeyRepeat
+            type: int
+            value: 15
 
-    - name: typing speed
-      community.general.osx_defaults:
-        domain: NSGlobalDomain
-        key: KeyRepeat
-        type: int
-        value: 2
+        - name: typing speed
+          community.general.osx_defaults:
+            domain: NSGlobalDomain
+            key: KeyRepeat
+            type: int
+            value: 2
 
-    - name: Press hold to repeat
-      community.general.osx_defaults:
-        domain: NSGlobalDomain
-        key: ApplePressAndHoldEnabled
-        type: bool
-        value: false
+        - name: Press hold to repeat
+          community.general.osx_defaults:
+            domain: NSGlobalDomain
+            key: ApplePressAndHoldEnabled
+            type: bool
+            value: false
 
-- name: Apply system-level settings
-  when: ansible_os_family == 'Darwin'
-  become: true
-  become_user: root
-  block:
-    - name: Set display sleep to 1 minute on battery
-      command: pmset -b displaysleep 1
+    - name: Apply system-level settings
+      become: true
+      become_user: root
+      block:
+        - name: Set display sleep to 1 minute on battery
+          command: pmset -b displaysleep 1
 
-    - name: Set display sleep to 2 minutes on AC power
-      command: pmset -c displaysleep 2
+        - name: Set display sleep to 2 minutes on AC power
+          command: pmset -c displaysleep 2
+
+    - name: Remove sound at the beginning
+      become: true
+      shell: sudo nvram StartupMute=%01
