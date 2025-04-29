@@ -2,6 +2,7 @@
   include_tasks: '{{ item }}'
   loop:
     - security.yml
+    - osx_defaults.yml
     - dev_tools.yml
     - vscode.yml
     - docker.yml
