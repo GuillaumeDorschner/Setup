@@ -165,3 +165,19 @@
     - name: Restart Dock
       command: killall Dock
       changed_when: false
+# to config the safari
+# Granting Full Disk Access to Terminal
+# To resolve this, you need to grant Full Disk Access to the Terminal:
+
+# Open System Settings.
+# Navigate to Privacy & Security > Full Disk Access.
+# Click the lock icon to make changes and enter your administrator password.
+# Click the "+" button, then select and add Terminal from the Applications > Utilities folder.
+# Ensure that Terminal is checked in the list.
+# Restart Terminal to apply the changes.​
+# GitHub
+# +6
+# Tenable®
+# +6
+# Wikipedia
+# +6
