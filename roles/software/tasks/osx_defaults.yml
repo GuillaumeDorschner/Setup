@@ -154,6 +154,13 @@
         - name: Set display sleep to 2 minutes on AC power
           command: pmset -c displaysleep 2
 
+    - name: Remove click on wallpaper to see desktop
+      community.general.osx_defaults:
+        domain: com.apple.WindowManager
+        key: EnableStandardClickToShowDesktop
+        type: bool
+        value: false
+
     - name: Remove sound at the beginning
       become: true
       shell: sudo nvram StartupMute=%01
