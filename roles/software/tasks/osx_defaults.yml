@@ -154,6 +154,7 @@
         - name: Show Wi-Fi in Control Center menu
           community.general.osx_defaults:
             domain: com.apple.controlcenter
+            host: currentHost
             key: 'NSStatusItem Visible WiFi'
             type: int
             value: 1
@@ -161,12 +162,14 @@
         - name: Show Bluetooth in Control Center menu
           community.general.osx_defaults:
             domain: com.apple.controlcenter
+            host: currentHost
             key: 'NSStatusItem Visible Bluetooth'
             type: int
             value: 1
 
         - name: Show Focus in Control Center menu
           community.general.osx_defaults:
+            host: currentHost
             domain: com.apple.controlcenter
             key: 'NSStatusItem Visible FocusModes'
             type: int
@@ -175,6 +178,7 @@
         - name: Show Sound in Control Center menu
           community.general.osx_defaults:
             domain: com.apple.controlcenter
+            host: currentHost
             key: 'NSStatusItem Visible Sound'
             type: int
             value: 1
@@ -182,6 +186,7 @@
         - name: Show Battery in Control Center menu
           community.general.osx_defaults:
             domain: com.apple.controlcenter
+            host: currentHost
             key: 'NSStatusItem Visible Battery'
             type: int
             value: 1
@@ -189,6 +194,7 @@
         - name: Hide AirDrop from Control Center menu
           community.general.osx_defaults:
             domain: com.apple.controlcenter
+            host: currentHost
             key: 'NSStatusItem Visible AirDrop'
             type: int
             value: 0
@@ -196,6 +202,7 @@
         - name: Hide Spotlight from Control Center menu
           community.general.osx_defaults:
             domain: com.apple.controlcenter
+            host: currentHost
             key: 'NSStatusItem Visible Spotlight'
             type: int
             value: 0
@@ -203,6 +210,7 @@
         - name: Hide Now Playing from Control Center menu
           community.general.osx_defaults:
             domain: com.apple.controlcenter
+            host: currentHost
             key: 'NSStatusItem Visible NowPlaying'
             type: int
             value: 0
@@ -226,6 +234,10 @@
 
     - name: Restart Dock
       command: killall Dock
+      changed_when: false
+
+    - name: Restart cfprefsd
+      command: killall cfprefsd
       changed_when: false
 
     - name: Restart Control Center
