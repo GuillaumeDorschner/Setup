@@ -159,6 +159,22 @@
             type: int
             value: 1
 
+        - name: Position Wi-Fi in Control Center menu
+          community.general.osx_defaults:
+            domain: com.apple.controlcenter
+            host: currentHost
+            key: 'NSStatusItem Preferred Position WiFi'
+            type: int
+            value: 9
+
+        - name: Position WiFi in Control Center menu
+          community.general.osx_defaults:
+            domain: com.apple.controlcenter
+            host: currentHost
+            key: 'NSStatusItem Preferred Position WiFi'
+            type: int
+            value: 4
+
         - name: Show Bluetooth in Control Center menu
           community.general.osx_defaults:
             domain: com.apple.controlcenter
@@ -166,6 +182,14 @@
             key: 'NSStatusItem Visible Bluetooth'
             type: int
             value: 1
+
+        - name: Position Bluetooth in Control Center menu
+          community.general.osx_defaults:
+            domain: com.apple.controlcenter
+            host: currentHost
+            key: 'NSStatusItem Preferred Position Bluetooth'
+            type: int
+            value: 5
 
         - name: Show Focus in Control Center menu
           community.general.osx_defaults:
@@ -175,6 +199,14 @@
             type: int
             value: 1
 
+        - name: Position Focus in Control Center menu
+          community.general.osx_defaults:
+            domain: com.apple.controlcenter
+            host: currentHost
+            key: 'NSStatusItem Preferred Position FocusModes'
+            type: int
+            value: 2
+
         - name: Show Sound in Control Center menu
           community.general.osx_defaults:
             domain: com.apple.controlcenter
@@ -183,11 +215,27 @@
             type: int
             value: 1
 
+        - name: Position Sound in Control Center menu
+          community.general.osx_defaults:
+            domain: com.apple.controlcenter
+            host: currentHost
+            key: 'NSStatusItem Preferred Position Sound'
+            type: int
+            value: 3
+
         - name: Show Battery in Control Center menu
           community.general.osx_defaults:
             domain: com.apple.controlcenter
             host: currentHost
             key: 'NSStatusItem Visible Battery'
+            type: int
+            value: 1
+
+        - name: Position Battery in Control Center menu
+          community.general.osx_defaults:
+            domain: com.apple.controlcenter
+            host: currentHost
+            key: 'NSStatusItem Preferred Position Battery'
             type: int
             value: 1
 
