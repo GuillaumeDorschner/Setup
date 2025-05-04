@@ -144,6 +144,69 @@
             type: bool
             value: false
 
+        - name: Remove click on wallpaper to see desktop
+          community.general.osx_defaults:
+            domain: com.apple.WindowManager
+            key: EnableStandardClickToShowDesktop
+            type: bool
+            value: false
+
+        - name: Show Wi-Fi in Control Center menu
+          community.general.osx_defaults:
+            domain: com.apple.controlcenter
+            key: 'NSStatusItem Visible WiFi'
+            type: bool
+            value: true
+
+        - name: Show Bluetooth in Control Center menu
+          community.general.osx_defaults:
+            domain: com.apple.controlcenter
+            key: 'NSStatusItem Visible Bluetooth'
+            type: bool
+            value: true
+
+        - name: Show Focus in Control Center menu
+          community.general.osx_defaults:
+            domain: com.apple.controlcenter
+            key: 'NSStatusItem Visible FocusModes'
+            type: bool
+            value: true
+
+        - name: Show Sound in Control Center menu
+          community.general.osx_defaults:
+            domain: com.apple.controlcenter
+            key: 'NSStatusItem Visible Sound'
+            type: bool
+            value: true
+
+        - name: Show Battery in Control Center menu
+          community.general.osx_defaults:
+            domain: com.apple.controlcenter
+            key: 'NSStatusItem Visible Battery'
+            type: bool
+            value: true
+
+        - name: Show battery percentage in menu bar
+          community.general.osx_defaults:
+            domain: com.apple.menuextra.battery
+            key: ShowPercent
+            type: bool
+            value: true
+
+        - name: Hide AirDrop from Control Center menu
+          community.general.osx_defaults:
+            domain: com.apple.controlcenter
+            key: 'NSStatusItem Visible AirDrop'
+            type: bool
+            value: false
+
+        - name: Hide Spotlight from Control Center menu
+          community.general.osx_defaults:
+            domain: com.apple.controlcenter
+            key: 'NSStatusItem Visible Spotlight'
+            type: bool
+            value: false
+
     - name: Apply system-level settings
       become: true
       become_user: root
@@ -154,16 +217,8 @@
         - name: Set display sleep to 2 minutes on AC power
           command: pmset -c displaysleep 2
 
-    - name: Remove click on wallpaper to see desktop
-      community.general.osx_defaults:
-        domain: com.apple.WindowManager
-        key: EnableStandardClickToShowDesktop
-        type: bool
-        value: false
-
-    - name: Remove sound at the beginning
-      become: true
-      shell: sudo nvram StartupMute=%01
+        - name: Remove sound at the beginning
+          shell: sudo nvram StartupMute=%01
 
     - name: Reset Finder
       command: killall Finder
@@ -171,6 +226,14 @@
 
     - name: Restart Dock
       command: killall Dock
+      changed_when: false
+
+    - name: Restart Control Center
+      command: killall ControlCenter
+      changed_when: false
+
+    - name: Restart SystemUIServer
+      command: killall SystemUIServer
       changed_when: false
 # to config the safari
 # Granting Full Disk Access to Terminal
