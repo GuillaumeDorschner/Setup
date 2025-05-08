@@ -63,8 +63,8 @@
   "latex-workshop.latex.recipe.default": "lualatex",
 
   // PlantUML
-  "markdown-preview-enhanced.plantumlJarPath": "/usr/local/bin/plantuml.jar",
-  "plantuml.jar": "/usr/local/bin/plantuml.jar",
+  "markdown-preview-enhanced.plantumlJarPath": "/usr/local/opt/plantuml.jar",
+  "plantuml.jar": "/usr/local/opt/plantuml.jar",
 
   // Flutter
   "dart.previewFlutterUiGuides": true,
