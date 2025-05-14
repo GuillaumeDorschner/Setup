@@ -50,6 +50,11 @@
       "name": "lualatex",
       "command": "lualatex",
       "args": ["-shell-escape", "-interaction=nonstopmode", "-synctex=1", "-output-directory=%OUTDIR%", "%DOC%"]
+    },
+    {
+      "name": "makeglossaries",
+      "command": "makeglossaries",
+      "args": ["%DOCFILE%"]
     }
   ],
 
@@ -57,14 +62,18 @@
     {
       "name": "lualatex",
       "tools": ["lualatex"]
+    },
+    {
+      "name": "glo + lualatex",
+      "tools": ["lualatex", "makeglossaries", "lualatex", "lualatex"]
     }
   ],
 
-  "latex-workshop.latex.recipe.default": "lualatex",
+  "latex-workshop.latex.recipe.default": "lualatex+glossaries",
 
   // PlantUML
-  "markdown-preview-enhanced.plantumlJarPath": "/usr/local/opt/plantuml.jar",
-  "plantuml.jar": "/usr/local/opt/plantuml.jar",
+  "markdown-preview-enhanced.plantumlJarPath": "/usr/local/opt/plantuml/libexec/plantuml.jar",
+  "plantuml.jar": "/usr/local/opt/plantuml/libexec/plantuml.jar",
 
   // Flutter
   "dart.previewFlutterUiGuides": true,
