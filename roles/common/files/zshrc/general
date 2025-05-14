@@ -15,8 +15,11 @@ if command -v helm &>/dev/null; then
   source <(helm completion zsh)
 fi
 
-# Functions
+# Args
+alias nix='code ”~/.config/nix”'
+alias setup='code ”~/Setup”'
 
+# Functions
 mcd() {
   mkdir -p "$1" && cd "$1"
 }
