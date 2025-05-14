@@ -60,16 +60,16 @@
 
   "latex-workshop.latex.recipes": [
     {
-      "name": "lualatex",
-      "tools": ["lualatex"]
+      "name": "All",
+      "tools": ["lualatex", "makeglossaries", "lualatex", "lualatex"]
     },
     {
-      "name": "glo + lualatex",
-      "tools": ["lualatex", "makeglossaries", "lualatex", "lualatex"]
+      "name": "lualatex",
+      "tools": ["lualatex"]
     }
   ],
 
-  "latex-workshop.latex.recipe.default": "lualatex+glossaries",
+  "latex-workshop.latex.recipe.default": "All",
 
   // PlantUML
   "markdown-preview-enhanced.plantumlJarPath": "/usr/local/opt/plantuml/libexec/plantuml.jar",
