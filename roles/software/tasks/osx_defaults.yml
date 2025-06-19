@@ -295,6 +295,8 @@
     - name: Restart SystemUIServer
       command: killall SystemUIServer
       changed_when: false
+# Mail need to do the following: sudo defaults write com.apple.mail ConversationViewSortDescending -bool true
+
 # to config the safari
 # Granting Full Disk Access to Terminal
 # To resolve this, you need to grant Full Disk Access to the Terminal:
