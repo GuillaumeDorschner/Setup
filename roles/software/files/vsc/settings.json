@@ -75,6 +75,9 @@
   "markdown-preview-enhanced.plantumlJarPath": "/usr/local/opt/plantuml/libexec/plantuml.jar",
   "plantuml.jar": "/usr/local/opt/plantuml/libexec/plantuml.jar",
 
+  // Todo-Tree
+  "todo-tree.filtering.excludeGlobs": ["**/node_modules/*"],
+
   // Flutter
   "dart.previewFlutterUiGuides": true,
   "dart.previewFlutterUiGuidesCustomTracking": true,
