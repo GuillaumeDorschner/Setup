@@ -45,6 +45,10 @@
   "latex-workshop.latex.autoClean.run": "never",
   "latex-workshop.view.outline.sync.viewer": true,
 
+  "[latex]": {
+    "editor.wordWrap": "on"
+  },
+
   "latex-workshop.latex.tools": [
     {
       "name": "lualatex",
