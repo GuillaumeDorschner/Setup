@@ -63,3 +63,7 @@ ocean() {
 server() {
   python3 -m http.server 80
 }
+
+bindkey -v
+bindkey ^R history-incremental-search-backward
+bindkey ^S history-incremental-search-forward
